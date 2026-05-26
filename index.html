@@ -3,69 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eid al-Adha Cinematic Experience</title>
+    <title>Eid al-Adha Graphic Experience</title>
     <style>
-        /* Base Setup */
         body, html {
             margin: 0;
             padding: 0;
             width: 100%;
             height: 100%;
-            background-color: #050514;
+            background-color: #0c0f26;
             color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end; /* Aligns content toward bottom like a stage */
         }
 
-        /* Moving Starry Background */
-        .stars {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 200%;
-            height: 200%;
-            background: transparent url('https://www.transparenttextures.com/patterns/stardust.png') repeat top center;
-            z-index: 0;
-            animation: moveStars 100s linear infinite;
-            opacity: 0.5;
-        }
-
-        @keyframes moveStars {
-            from { transform: translate(0, 0); }
-            to { transform: translate(-50%, -50%); }
-        }
-
-        /* Intro Screen (The Workaround for Autoplay) */
+        /* Click to Play Screen */
         #intro {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #050514;
+            background-color: #0c0f26;
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
             z-index: 100;
             cursor: pointer;
-            transition: opacity 1.5s ease-out;
+            transition: opacity 1s ease;
         }
 
-        .tap-text {
-            font-size: 1.5rem;
-            color: #fbbf24;
-            animation: pulseIntro 1.5s infinite;
-            letter-spacing: 2px;
+        .play-card {
+            padding: 20px 40px;
+            background: linear-gradient(135deg, #fbbf24, #d97706);
+            color: #0c0f26;
+            font-weight: bold;
+            font-size: 1.2rem;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(217, 119, 6, 0.4);
+            animation: pulse 1.5s infinite;
         }
 
-        @keyframes pulseIntro {
-            0%, 100% { opacity: 0.5; transform: scale(1); }
-            50% { opacity: 1; transform: scale(1.05); }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); box-shadow: 0 10px 25px rgba(217, 119, 6, 0.4); }
+            50% { transform: scale(1.05); box-shadow: 0 15px 35px rgba(217, 119, 6, 0.6); }
         }
 
-        /* Canvas for Fireworks */
-        canvas {
+        /* Vector Art Canvas */
+        #artCanvas {
             position: absolute;
             top: 0;
             left: 0;
@@ -74,211 +62,198 @@
             z-index: 1;
         }
 
-        /* Main Cinematic Content */
-        .content {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        /* Typography Overlay */
+        .ui-layer {
+            position: relative;
             z-index: 2;
-            opacity: 0; /* Hidden until play */
+            margin-bottom: 12vh; /* Holds text perfectly above the vector horizon */
             pointer-events: none;
-        }
-
-        /* Cinematic Animations */
-        .show-content .art-container {
-            animation: slideDownFade 3s cubic-bezier(0.25, 1, 0.5, 1) forwards, float 4s ease-in-out infinite 3s;
-        }
-
-        .show-content h1 {
-            animation: zoomInFade 4s cubic-bezier(0.25, 1, 0.5, 1) forwards, pulseGlow 2s infinite alternate 4s;
-        }
-
-        .show-content p {
-            animation: slideUpFade 4s cubic-bezier(0.25, 1, 0.5, 1) 1s forwards;
-        }
-
-        .art-container {
-            font-size: 100px;
-            margin-bottom: 20px;
+            text-align: center;
             opacity: 0;
-            transform: translateY(-50px);
+            transform: translateY(20px);
+            transition: all 2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .ui-layer.active {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         h1 {
-            font-size: 4rem;
-            color: #fbbf24;
+            font-size: 3.8rem;
             margin: 0;
-            opacity: 0;
-            transform: scale(0.8);
-            text-shadow: 0 0 10px #fbbf24, 0 0 20px #fbbf24;
+            color: #fef08a;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.6), 0 0 30px rgba(251, 191, 36, 0.3);
+            letter-spacing: 1px;
         }
 
         p {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: #e2e8f0;
-            max-width: 700px;
-            margin-top: 20px;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(50px);
+            max-width: 550px;
+            margin: 15px auto 0 auto;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
             line-height: 1.6;
         }
 
-        /* Keyframes for the "Video" sequence */
-        @keyframes slideDownFade {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes zoomInFade {
-            to { opacity: 1; transform: scale(1); }
-        }
-        @keyframes slideUpFade {
-            to { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-15px); }
-        }
-        @keyframes pulseGlow {
-            from { text-shadow: 0 0 15px #fbbf24, 0 0 30px #d97706; }
-            to { text-shadow: 0 0 25px #fbbf24, 0 0 50px #f59e0b, 0 0 80px #d97706; }
+        .signature {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            font-size: 0.85rem;
+            letter-spacing: 3px;
+            color: rgba(254, 240, 138, 0.5);
+            text-transform: uppercase;
         }
     </style>
-</head>
+    </head>
 <body>
 
-    <!-- Starry Background -->
-    <div class="stars"></div>
-
-    <!-- Intro Screen / Play Button -->
     <div id="intro">
-        <div class="tap-text">Tap anywhere to begin</div>
+        <div class="play-card">✨ ENTER EID EXPERIENCE ✨</div>
     </div>
 
-    <!-- Canvas for Fireworks -->
-    <canvas id="fireworksCanvas"></canvas>
+    <canvas id="artCanvas"></canvas>
 
-    <!-- Main Content -->
-    <div class="content" id="mainContent">
-        <div class="art-container">🌙 🕌</div>
+    <div class="ui-layer" id="textDisplay">
         <h1>Eid al-Adha Mubarak</h1>
-        <p>May this special day bring peace, happiness, and prosperity to you and your family.</p>
+        <p>May your faith and devotion be rewarded with supreme blessings, peace, and endless joy.</p>
     </div>
-    
-    <!-- Hidden Audio Element -->
-    <audio id="eidMusic" loop>
+
+    <div class="signature">Admin System Tracking</div>
+
+    <audio id="bgMusic" loop>
         <source src="music.mp3" type="audio/mpeg">
     </audio>
 
     <script>
-        // --- CINEMATIC SEQUENCE & AUDIO LOGIC ---
-        const intro = document.getElementById('intro');
-        const mainContent = document.getElementById('mainContent');
-        const audio = document.getElementById('eidMusic');
-        let experienceStarted = false;
-
-        intro.addEventListener('click', () => {
-            if (!experienceStarted) {
-                experienceStarted = true;
-                
-                // 1. Play Music
-                audio.play();
-
-                // 2. Fade out intro screen
-                intro.style.opacity = '0';
-                setTimeout(() => {
-                    intro.style.display = 'none';
-                }, 1500);
-
-                // 3. Trigger Cinematic Text Animations
-                mainContent.style.opacity = '1';
-                mainContent.classList.add('show-content');
-
-                // 4. Start Fireworks
-                animate();
-            }
-        });
-
-        // --- FIREWORKS CANVAS LOGIC ---
-        const canvas = document.getElementById('fireworksCanvas');
+        const canvas = document.getElementById('artCanvas');
         const ctx = canvas.getContext('2d');
+        const intro = document.getElementById('intro');
+        const textDisplay = document.getElementById('textDisplay');
+        const audio = document.getElementById('bgMusic');
 
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        let width = canvas.width = window.innerWidth;
+        let height = canvas.height = window.innerHeight;
 
         window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
         });
 
-        const particles = [];
-        const colors = ['#fbbf24', '#f59e0b', '#ffffff', '#34d399', '#60a5fa'];
+        // Interactive states
+        let pulseDirection = 1;
+        let glowScale = 0;
+        const stars = Array.from({ length: 60 }, () => ({
+            x: Math.random(),
+            y: Math.random() * 0.6,
+            size: Math.random() * 2 + 0.5,
+            speed: 0.01 + Math.random() * 0.02,
+            phase: Math.random() * Math.PI
+        }));
 
-        class Particle {
-            constructor(x, y, color) {
-                this.x = x;
-                this.y = y;
-                this.color = color;
-                this.velocity = {
-                    x: (Math.random() - 0.5) * 10,
-                    y: (Math.random() - 0.5) * 10
-                };
-                this.alpha = 1;
-                this.friction = 0.97;
-                this.gravity = 0.04;
-            }
+        // --- JAVASCRIPT VECTOR DRAWING ENGINE ---
+        function drawVectorArt() {
+            // 1. Draw Sky Gradient
+            let skyGrad = ctx.createLinearGradient(0, 0, 0, height);
+            skyGrad.addColorStop(0, '#060814');
+            skyGrad.addColorStop(0.5, '#0c112d');
+            skyGrad.addColorStop(1, '#1b173d');
+            ctx.fillStyle = skyGrad;
+            ctx.fillRect(0, 0, width, height);
 
-            draw() {
-                ctx.globalAlpha = this.alpha;
+            // 2. Draw Twinkling JS Stars
+            stars.forEach(s => {
+                s.phase += s.speed;
+                let alpha = (Math.sin(s.phase) + 1) / 2 * 0.8 + 0.2;
+                ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, 2.5, 0, Math.PI * 2, false);
-                ctx.fillStyle = this.color;
+                ctx.arc(s.x * width, s.y * height, s.size, 0, Math.PI * 2);
                 ctx.fill();
-            }
-
-            update() {
-                this.velocity.x *= this.friction;
-                this.velocity.y *= this.friction;
-                this.velocity.y += this.gravity;
-                this.x += this.velocity.x;
-                this.y += this.velocity.y;
-                this.alpha -= 0.012; 
-                this.draw();
-            }
-        }
-
-        function createFirework() {
-            const x = Math.random() * canvas.width;
-            const y = Math.random() * (canvas.height * 0.6);
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            
-            for (let i = 0; i < 70; i++) {
-                particles.push(new Particle(x, y, color));
-            }
-        }
-
-        function animate() {
-            requestAnimationFrame(animate);
-            ctx.fillStyle = 'rgba(5, 5, 20, 0.2)'; 
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            particles.forEach((particle, index) => {
-                if (particle.alpha > 0) {
-                    particle.update();
-                } else {
-                    particles.splice(index, 1);
-                }
             });
 
-            if (Math.random() < 0.04) {
-                createFirework();
-            }
+            // Dynamic bounce modifiers
+            glowScale += 0.005 * pulseDirection;
+            if(glowScale > 1 || glowScale < 0) pulseDirection *= -1;
+            let dynamicOffset = Math.sin(glowScale * Math.PI) * 8;
+
+            // 3. Draw Stylized Graphic Crescent Moon
+            const moonX = width * 0.5;
+            const moonY = height * 0.32 + (dynamicOffset * 0.3);
+            
+            ctx.shadowBlur = 40 + (dynamicOffset * 2);
+            ctx.shadowColor = 'rgba(251, 191, 36, 0.4)';
+            
+            ctx.fillStyle = '#fef08a';
+            ctx.beginPath();
+            ctx.arc(moonX, moonY, 70, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Masking cut out to form the perfect crescent shape
+            ctx.shadowBlur = 0; 
+            ctx.fillStyle = skyGrad; 
+            ctx.beginPath();
+            ctx.arc(moonX + 22, moonY - 10, 65, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 4. Draw Layered Vector Islamic Mosque Silhouette (Bottom Horizon)
+            ctx.shadowBlur = 0;
+            const baseWidth = Math.min(600, width * 0.9);
+            const startX = (width - baseWidth) / 2;
+            const horizon = height * 0.95;
+
+            // Gradient composition for vector graphic feel
+            let architectureGrad = ctx.createLinearGradient(0, height * 0.5, 0, height);
+            architectureGrad.addColorStop(0, '#2d2159');
+            architectureGrad.addColorStop(1, '#130d2b');
+            ctx.fillStyle = architectureGrad;
+
+            ctx.beginPath();
+            // Main structure block
+            ctx.rect(startX, horizon - 80, baseWidth, 80);
+            
+            // Central dome build
+            const center = width / 2;
+            ctx.moveTo(center - 70, horizon - 80);
+            ctx.quadraticCurveTo(center - 70, horizon - 160, center, horizon - 160);
+            ctx.quadraticCurveTo(center + 70, horizon - 160, center + 70, horizon - 80);
+
+            // Left Minaret tower
+            ctx.rect(startX + 30, horizon - 210, 25, 130);
+            ctx.moveTo(startX + 25, horizon - 210);
+            ctx.lineTo(startX + 42.5, horizon - 245);
+            ctx.lineTo(startX + 60, horizon - 210);
+
+            // Right Minaret tower
+            ctx.rect(startX + baseWidth - 55, horizon - 210, 25, 130);
+            ctx.moveTo(startX + baseWidth - 60, horizon - 210);
+            ctx.lineTo(startX + baseWidth - 42.5, horizon - 245);
+            ctx.lineTo(startX + baseWidth - 25, horizon - 210);
+
+            ctx.closePath();
+            ctx.fill();
         }
+
+        // Render Loop running graphics dynamically
+        function runGraphicsEngine() {
+            drawVectorArt();
+            requestAnimationFrame(runGraphicsEngine);
+        }
+
+        // Audio and Screen Reveal handling
+        intro.addEventListener('click', () => {
+            audio.play();
+            intro.style.opacity = '0';
+            setTimeout(() => {
+                intro.style.display = 'none';
+                textDisplay.classList.add('active');
+            }, 1000);
+        });
+
+        // Initialize engine
+        runGraphicsEngine();
     </script>
 </body>
 </html>
