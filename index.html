@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eid al-Adha Mubarak</title>
+    <style>
+        /* Base Setup */
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #0b0b2a, #1a1a4b);
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* Floating Moon & Lantern Animation */
+        .art-container {
+            font-size: 80px;
+            margin-bottom: 20px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* Glowing Text Animation */
+        h1 {
+            font-size: 3rem;
+            color: #fbbf24; /* Gold */
+            text-shadow: 0 0 10px #fbbf24, 0 0 20px #fbbf24, 0 0 40px #d97706;
+            animation: pulseGlow 2s infinite alternate;
+            margin: 0;
+        }
+
+        @keyframes pulseGlow {
+            from { text-shadow: 0 0 10px #fbbf24, 0 0 20px #fbbf24; }
+            to { text-shadow: 0 0 20px #fbbf24, 0 0 30px #f59e0b, 0 0 50px #d97706; }
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #cbd5e1;
+            max-width: 600px;
+            margin-top: 15px;
+        }
+
+        /* Music Button Styling */
+        button {
+            margin-top: 30px;
+            padding: 12px 24px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #0b0b2a;
+            background-color: #fbbf24;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(251, 191, 36, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background-color: #f59e0b;
+            box-shadow: 0 6px 20px rgba(251, 191, 36, 0.6);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="art-container">
+        🌙 🕌
+    </div>
+
+    <h1>Eid al-Adha Mubarak!</h1>
+    <p>May this special day bring peace, happiness, and prosperity to you and your family.</p>
+
+    <button id="musicBtn">🎵 Play Eid Music</button>
+    
+    <audio id="eidMusic" loop>
+        <source src="music.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <script>
+        // JavaScript to handle the play/pause logic
+        const btn = document.getElementById('musicBtn');
+        const audio = document.getElementById('eidMusic');
+        let isPlaying = false;
+
+        btn.addEventListener('click', () => {
+            if (isPlaying) {
+                audio.pause();
+                btn.innerText = "🎵 Play Eid Music";
+            } else {
+                audio.play();
+                btn.innerText = "⏸️ Pause Music";
+            }
+            isPlaying = !isPlaying;
+        });
+    </script>
+
+</body>
+</html>
