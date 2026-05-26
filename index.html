@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eid al-Adha Mubarak</title>
+    <title>Eid al-Adha Mubarak - Animated</title>
     <style>
         /* Base Setup */
         body {
             margin: 0;
             padding: 0;
-            background: linear-gradient(to bottom, #0b0b2a, #1a1a4b);
+            background-color: #0b0b2a;
             color: white;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
@@ -19,6 +19,23 @@
             height: 100vh;
             overflow: hidden;
             text-align: center;
+        }
+
+        /* Canvas for Fireworks */
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Puts the fireworks behind the text */
+        }
+
+        /* Content Wrapper to sit above the canvas */
+        .content {
+            position: relative;
+            z-index: 2;
+            pointer-events: none; /* Lets clicks pass through to canvas if needed */
         }
 
         /* Floating Moon & Lantern Animation */
@@ -36,7 +53,7 @@
 
         /* Glowing Text Animation */
         h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             color: #fbbf24; /* Gold */
             text-shadow: 0 0 10px #fbbf24, 0 0 20px #fbbf24, 0 0 40px #d97706;
             animation: pulseGlow 2s infinite alternate;
@@ -49,16 +66,18 @@
         }
 
         p {
-            font-size: 1.2rem;
-            color: #cbd5e1;
+            font-size: 1.3rem;
+            color: #e2e8f0;
             max-width: 600px;
             margin-top: 15px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
 
         /* Music Button Styling */
         button {
+            pointer-events: auto; /* Re-enables clicking for the button */
             margin-top: 30px;
-            padding: 12px 24px;
+            padding: 12px 28px;
             font-size: 1.1rem;
             font-weight: bold;
             color: #0b0b2a;
@@ -79,22 +98,25 @@
 </head>
 <body>
 
-    <div class="art-container">
-        🌙 🕌
+    <canvas id="fireworksCanvas"></canvas>
+
+    <div class="content">
+        <div class="art-container">
+            🌙 🕌
+        </div>
+
+        <h1>Eid al-Adha Mubarak!</h1>
+        <p>May this special day bring peace, happiness, and prosperity to you and your family.</p>
+
+        <button id="musicBtn">🎵 Play Eid Music</button>
     </div>
-
-    <h1>Eid al-Adha Mubarak!</h1>
-    <p>May this special day bring peace, happiness, and prosperity to you and your family.</p>
-
-    <button id="musicBtn">🎵 Play Eid Music</button>
     
     <audio id="eidMusic" loop>
         <source src="music.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
     </audio>
 
     <script>
-        // JavaScript to handle the play/pause logic
+        // --- MUSIC PLAYER LOGIC ---
         const btn = document.getElementById('musicBtn');
         const audio = document.getElementById('eidMusic');
         let isPlaying = false;
@@ -109,6 +131,92 @@
             }
             isPlaying = !isPlaying;
         });
+
+        // --- FIREWORKS CANVAS LOGIC ---
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set canvas to full window size
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // Resize canvas if window size changes
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        const particles = [];
+        const colors = ['#fbbf24', '#f59e0b', '#ffffff', '#34d399', '#60a5fa'];
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                // Random explosion directions
+                this.velocity = {
+                    x: (Math.random() - 0.5) * 8,
+                    y: (Math.random() - 0.5) * 8
+                };
+                this.alpha = 1; // Opacity
+                this.friction = 0.98; // Slows down over time
+                this.gravity = 0.03; // Pulls down slightly
+            }
+
+            draw() {
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 2.5, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+
+            update() {
+                this.velocity.x *= this.friction;
+                this.velocity.y *= this.friction;
+                this.velocity.y += this.gravity;
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.alpha -= 0.015; // Fade out
+                this.draw();
+            }
+        }
+
+        function createFirework() {
+            // Random position in the top half of the screen
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * (canvas.height * 0.5);
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            
+            // Create 50 particles per firework burst
+            for (let i = 0; i < 50; i++) {
+                particles.push(new Particle(x, y, color));
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            // Slightly transparent background fill creates a trail effect
+            ctx.fillStyle = 'rgba(11, 11, 42, 0.15)'; 
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach((particle, index) => {
+                if (particle.alpha > 0) {
+                    particle.update();
+                } else {
+                    particles.splice(index, 1); // Remove dead particles
+                }
+            });
+
+            // Random chance to fire a new firework every frame (approx 3% chance)
+            if (Math.random() < 0.03) {
+                createFirework();
+            }
+        }
+
+        // Start the animation loop
+        animate();
     </script>
 
 </body>
