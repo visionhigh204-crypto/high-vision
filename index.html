@@ -254,13 +254,13 @@
             border-color: var(--primary);
         }
 
-        /* --- Admin Matrix Dashboard Panels --- */
+        /* --- Admin Dashboard Layout --- */
         .admin-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 1.5rem;
         }
-        @media(min-width: 900px) { .admin-grid { grid-template-columns: 1.8fr 1.2fr; } }
+        @media(min-width: 900px) { .admin-grid { grid-template-columns: 2fr 1fr; } }
 
         .control-card {
             background-color: #0f172a;
@@ -280,7 +280,7 @@
 
         .troll-btn-group {
             display: grid;
-            grid-template-columns: 1fr 1fr;
+            grid-template-columns: 1fr;
             gap: 0.75rem;
         }
 
@@ -302,7 +302,7 @@
             transform: translateY(-1px);
         }
 
-        /* Difficulty Toggle Switch */
+        /* Difficulty Toggle Switch Layout */
         .difficulty-panel {
             background-color: #020617;
             padding: 1rem;
@@ -311,7 +311,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 1rem;
         }
 
         .switch-btn {
@@ -354,15 +353,7 @@
         .status-badge.fail { background-color: rgba(239, 68, 68, 0.2); color: var(--error); }
         .status-badge.active-run { background-color: rgba(242, 169, 0, 0.15); color: var(--primary); }
 
-        /* --- OVERLAYS FOR INTERFERENCES --- */
-        .lock-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(15, 23, 42, 0.97);
-            display: none; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 100; border-radius: 12px; text-align: center; padding: 2rem;
-        }
-
+        /* Overlays for remaining interferences */
         .scare-overlay {
             position: fixed;
             top: 0; left: 0; width: 100vw; height: 100vh;
@@ -401,11 +392,6 @@
 
     <main>
         <div class="quiz-container" id="main-frame-card">
-            
-            <div id="lock-blocker" class="lock-overlay">
-                <h2 style="color: var(--error); font-size: 2rem; margin-bottom: 1rem;">🚨 PORTAL LOCKED BY ADMIN 🚨</h2>
-                <p style="color: var(--text-muted);">Your supervisor has frozen this tracking session execution temporarily.</p>
-            </div>
 
             <div id="login-view" class="view-section active-view">
                 <h2 style="margin-bottom: 0.5rem; color: var(--primary);">Autonomous Assessment Portal</h2>
@@ -488,17 +474,9 @@
                             </div>
                         </div>
 
-                        <div class="control-card">
-                            <h3>Active System Controls</h3>
-                            <div class="troll-btn-group">
-                                <button class="troll-ctrl-btn" onclick="fireRemoteCommand('lock')">🔒 Lock Screen</button>
-                                <button class="troll-ctrl-btn" onclick="fireRemoteCommand('unlock')">🔓 Unlock Screen</button>
-                            </div>
-                        </div>
-
                         <div class="control-card" style="border-color: var(--troll);">
                             <h3 style="color: #c084fc;">Troll Interferences</h3>
-                            <div class="troll-btn-group" style="grid-template-columns: 1fr;">
+                            <div class="troll-btn-group">
                                 <button class="troll-ctrl-btn" style="border-color: var(--error);" onclick="fireRemoteCommand('scare')">💥 Send Screen Jumpscare</button>
                                 <button class="troll-ctrl-btn" onclick="fireRemoteCommand('glitch')">👾 Trigger Matrix Glitch</button>
                                 <button class="troll-ctrl-btn" style="border-color: var(--error); color:var(--error);" onclick="fireRemoteCommand('crash')">☠️ Terminate & Fail Test</button>
@@ -535,13 +513,12 @@
         // --- Procedural Math Engines (With Embedded Difficulty Scaling Logic) ---
         const questionGenerators = [
             function(isHard) {
-                // Hard mode scaling coefficients
                 const multiplier = isHard ? 3 : 1;
                 const cement = (Math.floor(Math.random() * 150) + 300) * multiplier; 
                 const ratio = isHard ? 0.72 : (Math.floor(Math.random() * 20) + 40) / 100; 
                 const correctWater = parseFloat((cement * ratio).toFixed(1));
                 return {
-                    question: `${isHard ? '[HARD MODE] ' : ''}A heavy high-load structural aggregate matrix requires ${cement} kg of premium industrial cement. If specialized moisture conditions call for a specific W/C scale matrix of exactly ${ratio}, calculate the ultimate precise weight of hydration water required.`,
+                    question: `A heavy high-load structural aggregate matrix requires ${cement} kg of premium industrial cement. If specialized moisture conditions call for a specific W/C scale matrix of exactly ${ratio}, calculate the ultimate precise weight of hydration water required.`,
                     correctAnswer: `${correctWater} kg`,
                     distractors: [`${(correctWater + 31.4).toFixed(1)} kg`, `${(correctWater - 24.1).toFixed(1)} kg`, `${(cement * 0.31).toFixed(1)} kg`],
                     rationale: `${cement} * ${ratio} = ${correctWater} kg.`
@@ -555,7 +532,7 @@
                 const earlyFinish = earlyStart + duration;
                 const correctFloat = lateFinish - earlyFinish;
                 return {
-                    question: `${isHard ? '[HARD MODE] ' : ''}An enterprise pipeline dependency tree has an Early Start milestone of day ${earlyStart}, a complex task sequence span of ${duration} days, and Late Finish boundary constraints logged at day ${lateFinish}. Map out the critical path Total Float.`,
+                    question: `An enterprise pipeline dependency tree has an Early Start milestone of day ${earlyStart}, a complex task sequence span of ${duration} days, and Late Finish boundary constraints logged at day ${lateFinish}. Map out the critical path Total Float.`,
                     correctAnswer: `${correctFloat} days`,
                     distractors: [`${correctFloat + 5} days`, `0 days`, `${Math.abs(earlyStart - duration)} days`],
                     rationale: `${lateFinish} - (${earlyStart} + ${duration}) = ${correctFloat} days.`
@@ -565,7 +542,6 @@
 
         function generateProceduralExam(targetCount) {
             let uniqueGeneratedSet = [];
-            // Read active system difficulty live tracking state
             const currentDifficulty = localStorage.getItem('highVisionEngineDifficulty') || 'normal';
             const isHard = currentDifficulty === 'hard';
 
@@ -622,21 +598,18 @@
         window.addEventListener('storage', (e) => {
             if (e.key === 'highVisionRemoteCommand') executeTrollAction(e.newValue);
             if (e.key === 'highVisionLiveProgress' && document.getElementById('admin-view').classList.contains('active-view')) {
-                renderAdminTableData(); // Instant tracking screen repaint
+                renderAdminTableData(); 
             }
         });
 
         function executeTrollAction(command) {
             const mainFrame = document.getElementById('main-frame-card');
-            if (command === 'lock') document.getElementById('lock-blocker').style.display = 'flex';
-            else if (command === 'unlock') document.getElementById('lock-blocker').style.display = 'none';
-            else if (command === 'scare') {
+            if (command === 'scare') {
                 document.getElementById('jumpscare-box').style.display = 'flex';
                 setTimeout(() => { document.getElementById('jumpscare-box').style.display = 'none'; }, 2000);
             } else if (command === 'glitch') mainFrame.classList.add('sabotage-matrix');
             else if (command === 'clear-trolls') {
                 mainFrame.classList.remove('sabotage-matrix');
-                document.getElementById('lock-blocker').style.display = 'none';
             } else if (command === 'crash') {
                 runningScore = 0; currentQuestionIndex = TOTAL_QUESTIONS - 1;
                 pushLiveStateUpdate("FORCE FAILED");
@@ -726,7 +699,6 @@
             document.getElementById('next-btn').disabled = false;
             document.getElementById('next-btn').innerText = currentQuestionIndex === activeExamSet.length - 1 ? "Finish Assessment" : "Next Question";
             
-            // Push calculation tracking step to admin window live stream channels
             pushLiveStateUpdate();
         }
 
