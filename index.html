@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>High Vision | Construction Engineers</title>
-    <!-- Google Fonts for a modern, premium feel -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>High Vision | Engineering Examination Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Modern Reset and Variables */
+        /* Modern CSS Variables & Resets */
         * {
             margin: 0;
             padding: 0;
@@ -16,222 +15,498 @@
         }
 
         :root {
-            --primary: #f2a900; /* Premium Construction Gold/Amber */
-            --dark: #111827;    /* Deep Slate/Black */
-            --light: #f9fafb;   /* Clean Off-White */
-            --gray: #6b7280;    /* Muted Text Gray */
+            --primary: #f2a900;       /* Premium Gold / Accent */
+            --dark-bg: #0f172a;      /* Deep Slate Base */
+            --card-bg: #1e293b;      /* Muted Slate Card Surface */
+            --text-main: #f8fafc;    /* Bright Text */
+            --text-muted: #94a3b8;   /* Gray Secondary Text */
+            --success: #10b981;      /* Emerald Green for correct feedback */
+            --error: #ef4444;        /* Crimson Red for incorrect feedback */
         }
 
         body {
-            background-color: var(--light);
-            color: var(--dark);
-            line-height: 1.6;
+            background-color: var(--dark-bg);
+            color: var(--text-main);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
         }
 
-        /* Navigation */
-        nav {
-            background-color: var(--dark);
-            padding: 1.5rem 10%;
+        /* Top Navigation Header */
+        header {
+            background-color: #020617;
+            padding: 1.25rem 10%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            border-bottom: 2px solid #1e293b;
         }
 
         .logo {
-            color: #ffffff;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
             font-weight: 700;
             letter-spacing: 1px;
+            color: #ffffff;
         }
 
         .logo span {
             color: var(--primary);
         }
 
-        .nav-links {
-            list-style: none;
+        .portal-tag {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        /* Container & Grid Layout */
+        main {
+            flex: 1;
             display: flex;
-            gap: 2rem;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
         }
 
-        .nav-links a {
-            color: #e5e7eb;
-            text-decoration: none;
-            font-weight: 500;
-            transition: color 0.3s ease;
+        .quiz-container {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 750px;
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            border-left: 5px solid var(--primary);
         }
 
-        .nav-links a:hover {
+        /* Progress Bar Indicators */
+        .progress-wrapper {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            font-weight: 600;
             color: var(--primary);
         }
 
-        /* Hero Section */
-        .hero {
-            background: linear-gradient(rgba(17, 24, 39, 0.85), rgba(17, 24, 39, 0.85)), 
-                        url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
-            height: 80vh;
+        .progress-bar-outer {
+            width: 100%;
+            height: 6px;
+            background-color: #0f172a;
+            border-radius: 10px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .progress-bar-inner {
+            height: 100%;
+            width: 10%;
+            background-color: var(--primary);
+            transition: width 0.4s ease;
+        }
+
+        /* Question & Option Styling */
+        .question-text {
+            font-size: 1.35rem;
+            font-weight: 600;
+            line-height: 1.45;
+            margin-bottom: 2rem;
+        }
+
+        .options-list {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            gap: 1rem;
+            list-style: none;
+        }
+
+        .option-btn {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            color: var(--text-main);
+            padding: 1.2rem 1.5rem;
+            border-radius: 8px;
+            text-align: left;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .option-btn:hover:not([disabled]) {
+            border-color: var(--primary);
+            background-color: #1e293b;
+            transform: translateX(4px);
+        }
+
+        /* Feedback Processing Classes */
+        .option-btn.correct {
+            background-color: rgba(16, 185, 129, 0.15) !important;
+            border-color: var(--success) !important;
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .option-btn.incorrect {
+            background-color: rgba(239, 68, 68, 0.15) !important;
+            border-color: var(--error) !important;
+            color: #ef4444;
+        }
+
+        /* Explanatory Rationale Box */
+        .rationale-box {
+            margin-top: 1.5rem;
+            padding: 1.25rem;
+            background-color: #0f172a;
+            border-radius: 6px;
+            border-left: 3px solid var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.5;
+            display: none;
+        }
+
+        .rationale-box.visible {
+            display: block;
+        }
+
+        /* Navigation Button Structure */
+        .action-wrapper {
+            margin-top: 2rem;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .next-btn {
+            background-color: var(--primary);
+            color: #020617;
+            border: none;
+            padding: 0.85rem 2rem;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: opacity 0.2s ease, transform 0.1s ease;
+        }
+
+        .next-btn:hover {
+            transform: translateY(-1px);
+            background-color: #e09d00;
+        }
+
+        .next-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Results Screen Layout */
+        .results-screen {
             text-align: center;
-            padding: 0 1rem;
+            display: none;
+        }
+
+        .results-screen h2 {
+            font-size: 2.25rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .score-display {
+            font-size: 4rem;
+            font-weight: 700;
+            margin: 1.5rem 0;
             color: #ffffff;
         }
 
-        .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            letter-spacing: -1px;
+        .results-summary-text {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            max-width: 500px;
+            margin: 0 auto 2rem auto;
+            line-height: 1.6;
         }
 
-        .hero p {
-            font-size: 1.25rem;
-            max-width: 600px;
-            margin-bottom: 2rem;
-            color: #d1d5db;
-        }
-
-        .btn {
-            background-color: var(--primary);
-            color: var(--dark);
-            padding: 0.75rem 2rem;
-            text-decoration: none;
+        .restart-btn {
+            background-color: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            padding: 0.85rem 2.5rem;
             font-weight: 600;
-            border-radius: 4px;
-            transition: transform 0.2s ease, background-color 0.2s ease;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s ease;
         }
 
-        .btn:hover {
-            transform: translateY(-2px);
-            background-color: #d99600;
-        }
-
-        /* Services Section */
-        .services {
-            padding: 5rem 10%;
-            text-align: center;
-        }
-
-        .section-title {
-            font-size: 2.25rem;
-            margin-bottom: 3rem;
-            position: relative;
-            display: inline-block;
-        }
-
-        .section-title::after {
-            content: '';
-            width: 50%;
-            height: 4px;
+        .restart-btn:hover {
             background-color: var(--primary);
-            position: absolute;
-            bottom: -10px;
-            left: 25%;
+            color: #020617;
         }
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 1rem;
-        }
-
-        .card {
-            background: #ffffff;
-            padding: 2.5rem 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            border-top: 4px solid var(--dark);
-            transition: border-color 0.3s ease, transform 0.3s ease;
-        }
-
-        .card:hover {
-            border-top-color: var(--primary);
-            transform: translateY(-5px);
-        }
-
-        .card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .card p {
-            color: var(--gray);
-            font-size: 0.95rem;
-        }
-
-        /* Footer */
+        /* Footer Rules */
         footer {
-            background-color: var(--dark);
-            color: #9ca3af;
+            background-color: #020617;
             text-align: center;
-            padding: 3rem 1rem;
-            margin-top: 5rem;
-            font-size: 0.9rem;
-            border-top: 4px solid var(--primary);
-        }
-
-        footer p {
-            margin-bottom: 0.5rem;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5rem; }
-            .nav-links { display: none; } /* Simplified for example */
+            padding: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            border-top: 1px solid #1e293b;
         }
     </style>
 </head>
 <body>
 
-    <!-- Navigation Bar -->
-    <nav>
+    <header>
         <div class="logo">HIGH<span>VISION</span></div>
-        <ul class="nav-links">
-            <li><a href="#home">Home</a></li>
-            <li><a href="#services">Services</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-        </ul>
-    </nav>
-
-    <!-- Hero Header -->
-    <header class="hero" id="home">
-        <h1>Engineering Bold Visions</h1>
-        <p>From complex architectural layouts to structural master planning. We deliver high-end infrastructure solutions built to last.</p>
-        <a href="#services" class="btn">Explore Our Work</a>
+        <div class="portal-tag">Technical Assessment</div>
     </header>
 
-    <!-- Core Services Layout -->
-    <section class="services" id="services">
-        <h2 class="section-title">Our Engineering Expertise</h2>
-        <div class="grid">
-            <div class="card">
-                <h3>Structural Engineering</h3>
-                <p>Advanced structural analysis, blueprints, and meticulous design frameworks ensuring absolute stability and safety for commercial developments.</p>
+    <main>
+        <div class="quiz-container">
+            <div id="quiz-window">
+                <div class="progress-wrapper">
+                    <span class="progress-text" id="question-counter">Question 1 of 10</span>
+                </div>
+                <div class="progress-bar-outer">
+                    <div class="progress-bar-inner" id="progress-bar"></div>
+                </div>
+                
+                <div style="margin-top: 2rem;">
+                    <h2 class="question-text" id="question-field">Loading technical blueprint challenge question...</h2>
+                    <div class="options-list" id="options-field">
+                        </div>
+                </div>
+
+                <div class="rationale-box" id="rationale-field">
+                    </div>
+
+                <div class="action-wrapper">
+                    <button class="next-btn" id="next-btn" disabled>Submit Answer</button>
+                </div>
             </div>
-            <div class="card">
-                <h3>Project Management</h3>
-                <p>End-to-end execution supervision, scheduling, and strict quality control pipelines from breaking ground to final delivery.</p>
-            </div>
-            <div class="card">
-                <h3>Civil Design</h3>
-                <p>Innovative site planning, architectural zoning integration, and sustainable modern infrastructure development blueprints.</p>
+
+            <div id="results-window" class="results-screen">
+                <h2>Evaluation Complete</h2>
+                <p>Construction Engineering Core Diagnostics Metrics</p>
+                <div class="score-display"><span id="final-score">0</span> / 10</div>
+                <p class="results-summary-text" id="performance-feedback">Analyzing performance parameters...</p>
+                <button class="restart-btn" onclick="initializeExam()">Retake Examination</button>
             </div>
         </div>
-    </section>
+    </main>
 
-    <!-- Professional Footer -->
     <footer>
-        <p>&copy; 2026 High Vision Construction Engineering. All Rights Reserved.</p>
-        <p>Crafting high-end structural blueprints and partnerships.</p>
+        &copy; 2026 High Vision Construction Infrastructure. Quality Control & Engineering Diagnostics Portal.
     </footer>
 
+    <script>
+        // High-end structured technical questions array
+        const examDatabase = [
+            {
+                question: "When performing structural analysis for a new commercial development, which factor primarily determines the design's ultimate limit state (ULS)?",
+                options: [
+                    { text: "The structural safety and prevention of collapse under extreme loading conditions.", isCorrect: true, rationale: "The ultimate limit state focuses entirely on structural integrity, safety, and preventing catastrophic failure or collapse under extreme criteria." },
+                    { text: "The operational criteria and aesthetic appearance under everyday loading.", isCorrect: false, rationale: "Deflection, vibration, and minor surface cracking fall under the serviceability limit state (SLS), not ULS." },
+                    { text: "The initial material procurement costs and supply chain constraints.", isCorrect: false, rationale: "Logistical pricing targets are project management constraints rather than engineering design limit states." },
+                    { text: "The aesthetic integration with surrounding historical civil zoning.", isCorrect: false, rationale: "Zoning integration is a regulatory and architectural mandate, not a core structural limit calculation." }
+                ]
+            },
+            {
+                question: "In project scheduling, what defines an activity that lies on the 'Critical Path'?",
+                options: [
+                    { text: "Any task that requires high-end specialized engineering machinery.", isCorrect: false, rationale: "Equipment intensity does not make a path critical; topological sequence dependencies do." },
+                    { text: "An activity with zero total float, meaning any delay directly extends the project completion date.", isCorrect: true, rationale: "The critical path encompasses the precise sequence of dependent tasks that directly dictates the absolute minimum duration of the construction timeline." },
+                    { text: "Tasks that are legally mandated to be completed during the initial groundbreaking phase.", isCorrect: false, rationale: "Groundbreaking constraints represent project milestones rather than a dynamic sequence running across the schedule layout." },
+                    { text: "Activities that consume more than 50% of the total allocated structural budget.", isCorrect: false, rationale: "Critical paths evaluate time dependencies and float windows, not total financial allocation metrics." }
+                ]
+            },
+            {
+                question: "During a concrete slump test on a job site, a very high slump measurement most likely indicates which of the following properties?",
+                options: [
+                    { text: "High workability but a potential reduction in ultimate structural strength due to excess water.", isCorrect: true, rationale: "A high slump means the mixture flows easily, signaling a elevated water-to-cement ratio which typically reduces internal cross-linking strength once cured." },
+                    { text: "Excellent early-age strength development and low permeability.", isCorrect: false, rationale: "Excess water leads to increased internal micro-porosity, weakening structural properties." },
+                    { text: "The mix contains insufficient water and will be difficult to compact.", isCorrect: false, rationale: "Low slump values indicate dry, stiff structures that are hard to consolidate." },
+                    { text: "An optimal air-entrainment ratio ideal for sub-zero freezing environments.", isCorrect: false, rationale: "Slump metrics evaluate immediate mechanical consistency and workability, not microscopic air-void patterns." }
+                ]
+            },
+            {
+                question: "Which civil site planning tool is primarily used to analyze and design balanced cut-and-fill volumes during earthwork operations?",
+                options: [
+                    { text: "Mass haul diagram", isCorrect: true, rationale: "A mass haul diagram accurately tracks cumulative net earthwork volumes along structural profiles, minimizing hauling logistics costs." },
+                    { text: "Finite element mesh", isCorrect: false, rationale: "Finite element solvers calculate localized structural stress distributions, not global macroscopic site excavation data." },
+                    { text: "Gantt chart", isCorrect: false, rationale: "Gantt systems organize project time allocations rather than physical volumetric earth layouts." },
+                    { text: "Schematic structural blueprint", isCorrect: false, rationale: "Standard blueprints demonstrate design geometry dimensions but do not track cumulative earth-volume distribution metrics dynamically." }
+                ]
+            },
+            {
+                question: "What is the primary engineering purpose of installing retaining walls with weep holes?",
+                options: [
+                    { text: "To reduce hydrostatic pressure by allowing trapped groundwater to escape from behind the wall.", isCorrect: true, rationale: "Saturated soils put immense hydraulic lateral force on barriers; weep holes relieve fluid build-up to avoid structural turning failures." },
+                    { text: "To provide structural anchor points for secondary reinforcing steel ties.", isCorrect: false, rationale: "Weep configurations act solely as structural drainage, not mechanical tie-backs." },
+                    { text: "To improve architectural aesthetics and conform to local civil zoning rules.", isCorrect: false, rationale: "These are purely functional civil drainage mechanisms, not ornamental design elements." },
+                    { text: "To allow fresh air circulation to speed up the concrete curing pipeline.", isCorrect: false, rationale: "Retaining structures are completely cured prior to applying fill sand and facing hydrological loading." }
+                ]
+            },
+            {
+                question: "In foundation engineering, when is a deep foundation system (like driven piles or drilled shafts) required over a shallow mat foundation?",
+                options: [
+                    { text: "When the upper soil strata lack the bearing capacity to support the heavy structural loads safely.", isCorrect: true, rationale: "Deep foundation structures tunnel past superficial weak strata to safely lock the structure's structural loads into deeper bedrock configurations." },
+                    { text: "Whenever the project layout relies entirely on precast structural steel beams.", isCorrect: false, rationale: "Foundation specifications depend entirely on soil loading criteria and bearing capacities, not superstructure metal selections." },
+                    { text: "To minimize the total excavation cost on simple, single-story light frameworks.", isCorrect: false, rationale: "Deep foundations require advanced equipment setups, making them cost-inefficient for simple, light structures with strong surface soils." },
+                    { text: "When the groundwater table is completely non-existent throughout the site profile.", isCorrect: false, rationale: "The absence of a water table actually simplifies shallow pad implementations rather than forcing deep pile setups." }
+                ]
+            },
+            {
+                question: "Which of the following describes a key quality control step during the compaction of an asphalt runway or roadway?",
+                options: [
+                    { text: "Monitoring the layout strictly using ultrasonic echo localization matrices.", isCorrect: false, rationale: "Ultrasonic techniques are intended for internal material void checking in cast metals/concrete, not rolling track density logs." },
+                    { text: "Verifying the in-place density using a nuclear gauge or core sampling against reference laboratory density.", isCorrect: true, rationale: "Ensuring proper target material density prevents premature pavement fatigue, structural rutting, and pothole development." },
+                    { text: "Adding extra water immediately behind the roller to cool the asphalt quickly.", isCorrect: false, rationale: "Shocking freshly laid asphalt with surface water can cause thermal structural cracking and micro-fissuring." },
+                    { text: "Ensuring the structural blueprints are completely printed on-site before rolling begins.", isCorrect: false, rationale: "Physical field instrumentation testing defines the quality control pipeline action, not documentation logistics." }
+                ]
+            },
+            {
+                question: "What does a negative value for 'Total Float' in a construction schedule indicate to a project manager?",
+                options: [
+                    { text: "The project is currently ahead of schedule and under budget constraints.", isCorrect: false, rationale: "Negative values imply that scheduling targets have been broken, indicating delays." },
+                    { text: "Activities have been completed using fewer engineering man-hours than estimated.", isCorrect: false, rationale: "Float maps execution timelines and flexibility metrics, not human-hour ledger accounts." },
+                    { text: "The schedule is delayed, and the current sequence cannot meet the required milestone completion date.", isCorrect: true, rationale: "Negative float fields occur when operational dependencies mathematically demand more time than the hard contract deadline permits." },
+                    { text: "The structural design needs immediate re-evaluation using finite element tools.", isCorrect: false, rationale: "A critical float deficit indicates a project management scheduling layout conflict, not an inherent material failure risk." }
+                ]
+            },
+            {
+                question: "In reinforced concrete structures, what is the primary role of steel rebar placed in the bottom section of a simply supported horizontal beam?",
+                options: [
+                    { text: "To absorb and resist tensile stresses, as concrete is weak in tension.", isCorrect: true, rationale: "When loaded downwards, the underside of a simply supported structural element undergoes tension forces; steel is introduced there to compensate for concrete's low tensile performance." },
+                    { text: "To lower the overall dead weight of the concrete structural element.", isCorrect: false, rationale: "Structural steel is substantially denser than concrete mixes, adding to overall dead mass loads." },
+                    { text: "To prevent environmental chemical corrosion of the outer concrete skin layer.", isCorrect: false, rationale: "Inner steel reinforcement structural layouts depend on concrete coverage depth to protect them from external elements, not vice versa." },
+                    { text: "To maximize the initial hydration temperature during the pouring pipeline.", isCorrect: false, rationale: "Hydration is an exothermic chemical process; core structural steel bars do not serve as thermal reactions catalysts." }
+                ]
+            },
+            {
+                question: "Which safety management protocol is critical before executing any deep structural trench excavation?",
+                options: [
+                    { text: "Applying a high-gloss protective sealant along the trench bed floors.", isCorrect: false, rationale: "Sealants offer zero resistance to sudden soil cave-ins, which remain the primary site threat during digging operations." },
+                    { text: "Implementing reliable shoring, shielding, or sloping systems to prevent cave-ins.", isCorrect: true, rationale: "Unsupported dirt configurations can slide without warning. Engineered structural shoring or benching frameworks are mandatory parameters for safety." },
+                    { text: "Ensuring all civil blueprints are uploaded directly to public repositories.", isCorrect: false, rationale: "Repository version file management has zero influence over physical site dirt physics stability risks." },
+                    { text: "Accelerating project schedule activities to eliminate critical paths entirely.", isCorrect: false, rationale: "Rushing site activity pipelines often causes safety protocols to be bypassed, introducing extreme risk hazards." }
+                ]
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let runningScore = 0;
+        let isAnswerSelected = false;
+
+        // Element Selectors
+        const quizWindow = document.getElementById('quiz-window');
+        const resultsWindow = document.getElementById('results-window');
+        const questionCounter = document.getElementById('question-counter');
+        const progressBar = document.getElementById('progress-bar');
+        const questionField = document.getElementById('question-field');
+        const optionsField = document.getElementById('options-field');
+        const rationaleField = document.getElementById('rationale-field');
+        const nextBtn = document.getElementById('next-btn');
+        const finalScoreField = document.getElementById('final-score');
+        const performanceFeedback = document.getElementById('performance-feedback');
+
+        // Application State Controller Engine
+        function initializeExam() {
+            currentQuestionIndex = 0;
+            runningScore = 0;
+            resultsWindow.style.display = 'none';
+            quizWindow.style.display = 'block';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            isAnswerSelected = false;
+            nextBtn.disabled = true;
+            nextBtn.innerText = "Submit Answer";
+            rationaleField.classList.remove('visible');
+            optionsField.innerHTML = '';
+
+            // Update UI Counters
+            const currentQuestion = examDatabase[currentQuestionIndex];
+            questionCounter.innerText = `Question ${currentQuestionIndex + 1} of ${examDatabase.length}`;
+            progressBar.style.width = `${((currentQuestionIndex + 1) / examDatabase.length) * 100}%`;
+            questionField.innerText = currentQuestion.question;
+
+            // Render Option Buttons
+            currentQuestion.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.classList.add('option-btn');
+                button.innerText = option.text;
+                button.addEventListener('click', () => handleOptionSelection(button, option));
+                optionsField.appendChild(button);
+            });
+        }
+
+        function handleOptionSelection(selectedButton, optionData) {
+            if (isAnswerSelected) return; // Prevent clicking multiple options
+            isAnswerSelected = true;
+
+            const allButtons = optionsField.querySelectorAll('.option-btn');
+            
+            // Loop through options to flag correct/incorrect elements
+            allButtons.forEach(btn => {
+                btn.disabled = true; // Lockdown interface input
+                const diagnosticLabel = examDatabase[currentQuestionIndex].options.find(o => o.text === btn.innerText);
+                if (diagnosticLabel.isCorrect) {
+                    btn.classList.add('correct'); // Highlight answer key correct
+                }
+            });
+
+            if (optionData.isCorrect) {
+                runningScore++;
+            } else {
+                selectedButton.classList.add('incorrect'); // Tag chosen wrong item
+            }
+
+            // Expose rationales UI text
+            rationaleField.innerText = `Diagnostic Insight: ${optionData.rationale}`;
+            rationaleField.classList.add('visible');
+
+            // Shift navigation utility state
+            nextBtn.disabled = false;
+            if (currentQuestionIndex === examDatabase.length - 1) {
+                nextBtn.innerText = "Finish Assessment";
+            } else {
+                nextBtn.innerText = "Next Question";
+            }
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentQuestionIndex < examDatabase.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                displayFinalScorecard();
+            }
+        });
+
+        function displayFinalScorecard() {
+            quizWindow.style.display = 'none';
+            resultsWindow.style.display = 'block';
+            finalScoreField.innerText = runningScore;
+
+            // Define technical evaluation review commentary
+            if (runningScore >= 9) {
+                performanceFeedback.innerText = "Excellent capability. You have demonstrated master-level precision regarding high-end structural analytics, project execution layout optimization, and quality control pipeline workflows.";
+            } else if (runningScore >= 7) {
+                performanceFeedback.innerText = "Strong core engineering knowledge base. Competent structural calculation principles and material management tracking capabilities verified.";
+            } else {
+                performanceFeedback.innerText = "Review of technical structural blueprints, hydrostatic analysis variables, and project critical-path float calculations recommended to align with standard project standards.";
+            }
+        }
+
+        // Initialize exam upon load loop
+        window.onload = initializeExam;
+    </script>
 </body>
 </html>
