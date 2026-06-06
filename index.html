@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>High Vision | Enterprise Exam Matrix & Live Admin Command</title>
+    <title>High Vision | Live Cloud Exam Matrix</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         :root {
             --primary: #f2a900;       
             --dark-bg: #0f172a;      
@@ -21,366 +19,73 @@
             --text-muted: #94a3b8;   
             --success: #10b981;      
             --error: #ef4444;        
-            --troll: #a855f7;
         }
 
-        body {
-            background-color: var(--dark-bg);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            overflow-x: hidden;
-        }
+        body { background-color: var(--dark-bg); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
+        header { background-color: #020617; padding: 1.25rem 10%; display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #1e293b; }
+        .logo { font-size: 1.25rem; font-weight: 700; letter-spacing: 1px; color: #ffffff; }
+        .logo span { color: var(--primary); }
+        .nav-buttons { display: flex; gap: 1rem; }
+        .nav-btn { background-color: transparent; border: 1px solid #334155; color: var(--text-main); padding: 0.5rem 1rem; border-radius: 4px; cursor: pointer; font-size: 0.85rem; transition: all 0.2s ease; }
+        .nav-btn:hover, .nav-btn.active { border-color: var(--primary); color: var(--primary); }
+        
+        main { flex: 1; display: flex; justify-content: center; align-items: center; padding: 2rem 1rem; }
+        .quiz-container { background-color: var(--card-bg); width: 100%; max-width: 950px; border-radius: 12px; padding: 2.5rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); border-left: 5px solid var(--primary); }
 
-        header {
-            background-color: #020617;
-            padding: 1.25rem 10%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid #1e293b;
-            z-index: 10;
-        }
+        .view-section { display: none; }
+        .view-section.active-view { display: block; }
 
-        .logo {
-            font-size: 1.25rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: #ffffff;
-        }
+        .progress-wrapper { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+        .progress-text { font-size: 0.9rem; font-weight: 600; color: var(--primary); }
+        .progress-bar-outer { width: 100%; height: 6px; background-color: #0f172a; border-radius: 10px; margin-top: 0.5rem; overflow: hidden; }
+        .progress-bar-inner { height: 100%; width: 0%; background-color: var(--primary); transition: width 0.4s ease; }
 
-        .logo span {
-            color: var(--primary);
-        }
+        .question-text { font-size: 1.35rem; font-weight: 600; line-height: 1.45; margin-bottom: 2rem; }
+        .options-list { display: flex; flex-direction: column; gap: 1rem; }
+        .option-btn { background-color: #0f172a; border: 1px solid #334155; color: var(--text-main); padding: 1.2rem 1.5rem; border-radius: 8px; text-align: left; font-size: 1rem; cursor: pointer; transition: all 0.2s ease; }
+        .option-btn:hover:not([disabled]) { border-color: var(--primary); background-color: #1e293b; transform: translateX(4px); }
+        .option-btn.correct { background-color: rgba(16, 185, 129, 0.15) !important; border-color: var(--success) !important; color: #10b981; font-weight: 600; }
+        .option-btn.incorrect { background-color: rgba(239, 68, 68, 0.15) !important; border-color: var(--error) !important; color: #ef4444; }
 
-        .nav-buttons {
-            display: flex;
-            gap: 1rem;
-        }
+        .rationale-box { margin-top: 1.5rem; padding: 1.25rem; background-color: #0f172a; border-radius: 6px; border-left: 3px solid var(--text-muted); font-size: 0.95rem; display: none; }
+        .rationale-box.visible { display: block; }
 
-        .nav-btn {
-            background-color: transparent;
-            border: 1px solid #334155;
-            color: var(--text-main);
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            font-weight: 500;
-            transition: all 0.2s ease;
-        }
+        .action-wrapper { margin-top: 2rem; display: flex; justify-content: flex-end; gap: 1rem; }
+        .next-btn, .admin-action-btn { background-color: var(--primary); color: #020617; border: none; padding: 0.85rem 2rem; font-weight: 600; border-radius: 6px; cursor: pointer; font-size: 1rem; }
+        .next-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .nav-btn:hover, .nav-btn.active {
-            border-color: var(--primary);
-            color: var(--primary);
-        }
+        .results-screen { text-align: center; }
+        .score-display { font-size: 4rem; font-weight: 700; margin: 1.5rem 0; }
+        .input-group { margin-bottom: 1.5rem; text-align: left; }
+        .input-group label { display: block; margin-bottom: 0.5rem; color: var(--text-muted); font-size: 0.9rem; }
+        .input-group input { width: 100%; padding: 0.85rem; background-color: #0f172a; border: 1px solid #334155; border-radius: 6px; color: white; }
 
-        main {
-            flex: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem 1rem;
-            position: relative;
-        }
-
-        .quiz-container {
-            background-color: var(--card-bg);
-            width: 100%;
-            max-width: 950px;
-            border-radius: 12px;
-            padding: 2.5rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
-            border-left: 5px solid var(--primary);
-            position: relative;
-            transition: all 0.3s ease;
-        }
-
-        .view-section {
-            display: none;
-        }
-
-        .view-section.active-view {
-            display: block;
-        }
-
-        .progress-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .progress-text {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--primary);
-        }
-
-        .progress-bar-outer {
-            width: 100%;
-            height: 6px;
-            background-color: #0f172a;
-            border-radius: 10px;
-            margin-top: 0.5rem;
-            overflow: hidden;
-        }
-
-        .progress-bar-inner {
-            height: 100%;
-            width: 0%;
-            background-color: var(--primary);
-            transition: width 0.4s ease;
-        }
-
-        .question-text {
-            font-size: 1.35rem;
-            font-weight: 600;
-            line-height: 1.45;
-            margin-bottom: 2rem;
-        }
-
-        .options-list {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .option-btn {
-            background-color: #0f172a;
-            border: 1px solid #334155;
-            color: var(--text-main);
-            padding: 1.2rem 1.5rem;
-            border-radius: 8px;
-            text-align: left;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-
-        .option-btn:hover:not([disabled]) {
-            border-color: var(--primary);
-            background-color: #1e293b;
-            transform: translateX(4px);
-        }
-
-        .option-btn.correct {
-            background-color: rgba(16, 185, 129, 0.15) !important;
-            border-color: var(--success) !important;
-            color: #10b981;
-            font-weight: 600;
-        }
-
-        .option-btn.incorrect {
-            background-color: rgba(239, 68, 68, 0.15) !important;
-            border-color: var(--error) !important;
-            color: #ef4444;
-        }
-
-        .rationale-box {
-            margin-top: 1.5rem;
-            padding: 1.25rem;
-            background-color: #0f172a;
-            border-radius: 6px;
-            border-left: 3px solid var(--text-muted);
-            font-size: 0.95rem;
-            line-height: 1.5;
-            display: none;
-        }
-
-        .rationale-box.visible {
-            display: block;
-        }
-
-        .action-wrapper {
-            margin-top: 2rem;
-            display: flex;
-            justify-content: flex-end;
-            gap: 1rem;
-        }
-
-        .next-btn, .admin-action-btn {
-            background-color: var(--primary);
-            color: #020617;
-            border: none;
-            padding: 0.85rem 2rem;
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.2s ease;
-        }
-
-        .next-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .results-screen {
-            text-align: center;
-        }
-
-        .score-display {
-            font-size: 4rem;
-            font-weight: 700;
-            margin: 1.5rem 0;
-        }
-
-        .input-group {
-            margin-bottom: 1.5rem;
-            text-align: left;
-        }
-
-        .input-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-muted);
-            font-size: 0.9rem;
-        }
-
-        .input-group input {
-            width: 100%;
-            padding: 0.85rem;
-            background-color: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 6px;
-            color: white;
-            font-size: 1rem;
-        }
-
-        .input-group input:focus {
-            outline: none;
-            border-color: var(--primary);
-        }
-
-        /* --- Admin Dashboard Layout --- */
-        .admin-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1.5rem;
-        }
+        /* Admin Layout */
+        .admin-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
         @media(min-width: 900px) { .admin-grid { grid-template-columns: 2fr 1fr; } }
+        .control-card { background-color: #0f172a; border: 1px solid #334155; border-radius: 8px; padding: 1.25rem; margin-bottom: 1.25rem; }
+        .control-card h3 { color: var(--primary); margin-bottom: 1rem; font-size: 1.05rem; border-bottom: 1px solid #1e293b; padding-bottom: 0.5rem; }
 
-        .control-card {
-            background-color: #0f172a;
-            border: 1px solid #334155;
-            border-radius: 8px;
-            padding: 1.25rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .control-card h3 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-            font-size: 1.05rem;
-            border-bottom: 1px solid #1e293b;
-            padding-bottom: 0.5rem;
-        }
-
-        .troll-btn-group {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
-        }
-
-        .troll-ctrl-btn {
-            background-color: #1e293b;
-            border: 1px solid #334155;
-            color: var(--text-main);
-            padding: 0.75rem;
-            border-radius: 6px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.2s ease;
-        }
-
-        .troll-ctrl-btn:hover {
-            border-color: var(--troll);
-            color: #d8b4fe;
-            transform: translateY(-1px);
-        }
-
-        /* Difficulty Toggle Switch Layout */
-        .difficulty-panel {
-            background-color: #020617;
-            padding: 1rem;
-            border-radius: 6px;
-            border: 1px solid #334155;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .switch-btn {
-            padding: 0.6rem 1.2rem;
-            font-weight: 700;
-            border-radius: 4px;
-            cursor: pointer;
-            border: none;
-            font-size: 0.85rem;
-            transition: all 0.2s ease;
-        }
-
+        .difficulty-panel { background-color: #020617; padding: 1rem; border-radius: 6px; border: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
+        .switch-btn { padding: 0.6rem 1.2rem; font-weight: 700; border-radius: 4px; cursor: pointer; border: none; font-size: 0.85rem; }
         .switch-normal { background-color: var(--success); color: #020617; }
         .switch-hard { background-color: #334155; color: var(--text-muted); }
-
         .switch-active-hard .switch-normal { background-color: #334155; color: var(--text-muted); }
-        .switch-active-hard .switch-hard { background-color: var(--error); color: white; animation: pulse 1s infinite alternate; }
+        .switch-active-hard .switch-hard { background-color: var(--error); color: white; }
 
-        @keyframes pulse { 0% { opacity: 0.8; } 100% { opacity: 1; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); } }
-
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            border-radius: 6px;
-            background-color: #0f172a;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 0.85rem;
-        }
-
+        .table-responsive { width: 100%; overflow-x: auto; border-radius: 6px; background-color: #0f172a; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; }
         th, td { padding: 0.85rem; border-bottom: 1px solid #1e293b; }
         th { background-color: #020617; color: var(--primary); }
-
         .status-badge { padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
         .status-badge.pass { background-color: rgba(16, 185, 129, 0.2); color: var(--success); }
         .status-badge.fail { background-color: rgba(239, 68, 68, 0.2); color: var(--error); }
         .status-badge.active-run { background-color: rgba(242, 169, 0, 0.15); color: var(--primary); }
 
-        /* Overlays for remaining interferences */
-        .scare-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background: radial-gradient(circle, #ef4444, #000000);
-            display: none; justify-content: center; align-items: center;
-            z-index: 1000; color: white; font-size: 3.5rem; font-weight: 900;
-            animation: shake 0.1s infinite;
-        }
-
-        @keyframes shake {
-            0% { transform: translate(2px, 1px) rotate(0deg); }
-            10% { transform: translate(-1px, -2px) rotate(-1deg); }
-            20% { transform: translate(-3px, 0px) rotate(1deg); }
-            30% { transform: translate(0px, 2px) rotate(0deg); }
-            40% { transform: translate(1px, -1px) rotate(1deg); }
-            50% { transform: translate(-1px, 2px) rotate(-1deg); }
-        }
-
-        .sabotage-matrix { animation: matrixGlitch 0.4s infinite alternate !important; }
-        @keyframes matrixGlitch { 0% { filter: hue-rotate(0deg); transform: scale(1); } 100% { filter: hue-rotate(180deg); transform: scale(0.99) skewX(2deg); } }
-
         footer { background-color: #020617; text-align: center; padding: 1.5rem; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid #1e293b; }
     </style>
 </head>
 <body>
-
-    <div id="jumpscare-box" class="scare-overlay">⚠️ EXAM COMPROMISED! ⚠️</div>
 
     <header>
         <div class="logo">HIGH<span>VISION</span></div>
@@ -440,11 +145,11 @@
             </div>
 
             <div id="admin-view" class="view-section">
-                <h2 class="admin-title">Global Supervisor Command Core</h2>
+                <h2 class="admin-title" style="margin-bottom: 1rem;">Global Live Classroom Dashboard</h2>
                 
                 <div class="admin-grid">
                     <div>
-                        <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--text-muted);">Live Classroom Tracking Screen</h3>
+                        <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--text-muted);">True Live Cloud Tracking (All Devices)</h3>
                         <div class="table-responsive">
                             <table>
                                 <thead>
@@ -458,29 +163,19 @@
                                 <tbody id="live-table-body"></tbody>
                             </table>
                         </div>
-                        <button class="admin-action-btn" style="background-color: var(--error); color: white; margin-top: 1rem; padding: 0.4rem 1rem; font-size: 0.8rem;" onclick="clearAdminLogs()">Reset Ledger Records</button>
+                        <button class="admin-action-btn" style="background-color: var(--error); color: white; margin-top: 1rem; padding: 0.4rem 1rem; font-size: 0.8rem;" onclick="clearCloudDatabase()">Reset Cloud Database</button>
                     </div>
 
                     <div>
                         <div class="control-card" style="border-color: var(--error);">
                             <h3>Global Engine Rule Tuning</h3>
-                            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">Force computational difficulty scaling in real-time.</p>
+                            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">Force computational difficulty scaling over the cloud.</p>
                             <div class="difficulty-panel" id="diff-toggle-box">
-                                <span style="font-size:0.9rem; font-weight:600;">Engine Matrix Mode:</span>
+                                <span style="font-size:0.9rem; font-weight:600;">Matrix Mode:</span>
                                 <div>
-                                    <button class="switch-btn switch-normal" onclick="toggleEngineDifficulty('normal')">Normal</button>
-                                    <button class="switch-btn switch-hard" onclick="toggleEngineDifficulty('hard')">HARD MODE</button>
+                                    <button class="switch-btn switch-normal" onclick="setCloudDifficulty('normal')">Normal</button>
+                                    <button class="switch-btn switch-hard" onclick="setCloudDifficulty('hard')">HARD</button>
                                 </div>
-                            </div>
-                        </div>
-
-                        <div class="control-card" style="border-color: var(--troll);">
-                            <h3 style="color: #c084fc;">Troll Interferences</h3>
-                            <div class="troll-btn-group">
-                                <button class="troll-ctrl-btn" style="border-color: var(--error);" onclick="fireRemoteCommand('scare')">💥 Send Screen Jumpscare</button>
-                                <button class="troll-ctrl-btn" onclick="fireRemoteCommand('glitch')">👾 Trigger Matrix Glitch</button>
-                                <button class="troll-ctrl-btn" style="border-color: var(--error); color:var(--error);" onclick="fireRemoteCommand('crash')">☠️ Terminate & Fail Test</button>
-                                <button class="troll-ctrl-btn" style="border-color: var(--success); color: #10b981;" onclick="fireRemoteCommand('clear-trolls')">🔄 Restore Student View</button>
                             </div>
                         </div>
                     </div>
@@ -491,16 +186,22 @@
     </main>
 
     <footer>
-        &copy; 2026 High Vision Control Automations. Real-time Process Tracking Active.
+        &copy; 2026 High Vision Control Automations. True Cloud Sync Active.
     </footer>
 
     <script>
+        // Open-source Cloud Pipeline Configuration (Realtime Sync Across Different Devices)
+        const firebaseConfig = { databaseURL: "https://high-vision-quiz-default-rtdb.firebaseio.com/" };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         const TOTAL_QUESTIONS = 20;
         let currentQuestionIndex = 0;
         let runningScore = 0;
         let isAnswerSelected = false;
         let activeExamSet = [];
         let currentStudentName = "";
+        let globalHardModeActive = false;
 
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -510,29 +211,29 @@
             return array;
         }
 
-        // --- Procedural Math Engines (With Embedded Difficulty Scaling Logic) ---
+        // --- Question Generator Core ---
         const questionGenerators = [
             function(isHard) {
-                const multiplier = isHard ? 3 : 1;
-                const cement = (Math.floor(Math.random() * 150) + 300) * multiplier; 
+                const mult = isHard ? 3 : 1;
+                const cement = (Math.floor(Math.random() * 150) + 300) * mult; 
                 const ratio = isHard ? 0.72 : (Math.floor(Math.random() * 20) + 40) / 100; 
                 const correctWater = parseFloat((cement * ratio).toFixed(1));
                 return {
-                    question: `A heavy high-load structural aggregate matrix requires ${cement} kg of premium industrial cement. If specialized moisture conditions call for a specific W/C scale matrix of exactly ${ratio}, calculate the ultimate precise weight of hydration water required.`,
+                    question: `${isHard ? '[HARD MODE] ' : ''}A high-load structural aggregate matrix requires ${cement} kg of premium cement. If specified conditions call for a W/C scale matrix of exactly ${ratio}, calculate the precise weight of hydration water required.`,
                     correctAnswer: `${correctWater} kg`,
                     distractors: [`${(correctWater + 31.4).toFixed(1)} kg`, `${(correctWater - 24.1).toFixed(1)} kg`, `${(cement * 0.31).toFixed(1)} kg`],
                     rationale: `${cement} * ${ratio} = ${correctWater} kg.`
                 };
             },
             function(isHard) {
-                const modifier = isHard ? 45 : 0;
+                const modifier = isHard ? 50 : 0;
                 const earlyStart = Math.floor(Math.random() * 10) + 5 + modifier; 
                 const duration = Math.floor(Math.random() * 12) + 4 + modifier;
                 const lateFinish = earlyStart + duration + Math.floor(Math.random() * 6) + 2;
                 const earlyFinish = earlyStart + duration;
                 const correctFloat = lateFinish - earlyFinish;
                 return {
-                    question: `An enterprise pipeline dependency tree has an Early Start milestone of day ${earlyStart}, a complex task sequence span of ${duration} days, and Late Finish boundary constraints logged at day ${lateFinish}. Map out the critical path Total Float.`,
+                    question: `${isHard ? '[HARD MODE] ' : ''}An enterprise pipeline sequence has an Early Start day of ${earlyStart}, a duration of ${duration} days, and Late Finish constraints logged at day ${lateFinish}. Map out the Total Float.`,
                     correctAnswer: `${correctFloat} days`,
                     distractors: [`${correctFloat + 5} days`, `0 days`, `${Math.abs(earlyStart - duration)} days`],
                     rationale: `${lateFinish} - (${earlyStart} + ${duration}) = ${correctFloat} days.`
@@ -542,12 +243,9 @@
 
         function generateProceduralExam(targetCount) {
             let uniqueGeneratedSet = [];
-            const currentDifficulty = localStorage.getItem('highVisionEngineDifficulty') || 'normal';
-            const isHard = currentDifficulty === 'hard';
-
             for (let i = 0; i < targetCount; i++) {
                 const randomGen = questionGenerators[i % questionGenerators.length];
-                const generatedRawData = randomGen(isHard);
+                const generatedRawData = randomGen(globalHardModeActive);
                 let formattedQuestion = {
                     question: generatedRawData.question,
                     options: [
@@ -563,7 +261,7 @@
             return uniqueGeneratedSet;
         }
 
-        // View Nav Controls
+        // --- Navigation Controller ---
         function switchView(viewId) {
             document.querySelectorAll('.view-section').forEach(section => section.classList.remove('active-view'));
             document.getElementById(viewId).classList.add('active-view');
@@ -574,85 +272,101 @@
                 document.getElementById('nav-exam').classList.add('active');
             } else {
                 document.getElementById('nav-admin').classList.add('active');
-                if(viewId === 'admin-view') {
-                    renderAdminTableData();
-                    syncDifficultyUIState();
-                }
             }
         }
 
         function authenticateAdminGate() {
-            if(document.getElementById('admin-pin').value === "1234") switchView('admin-view');
-            else alert("INVALID MASTER SECURITY CODE ENTRY KEY.");
+            if(document.getElementById('admin-pin').value === "1234") {
+                switchView('admin-view');
+                listenToLiveCloudData(); // Admin starts listening to global cloud stream
+            } else {
+                alert("INVALID MASTER PIN.");
+            }
         }
 
         function startExamRegistration() {
             const nameInp = document.getElementById('student-name').value.trim();
-            if(nameInp === "") { alert("Please input authorization student identity parameters."); return; }
+            if(nameInp === "") { alert("Please input student name."); return; }
             currentStudentName = nameInp;
-            resetExamEngine();
-            switchView('quiz-view');
+            
+            // Check cloud difficulty state before building exam sheet
+            db.ref('globalDifficulty').once('value', (snapshot) => {
+                const mode = snapshot.val() || 'normal';
+                globalHardModeActive = (mode === 'hard');
+                resetExamEngine();
+                switchView('quiz-view');
+            });
         }
 
-        // --- Live Sync Listener Stream Hooks ---
-        window.addEventListener('storage', (e) => {
-            if (e.key === 'highVisionRemoteCommand') executeTrollAction(e.newValue);
-            if (e.key === 'highVisionLiveProgress' && document.getElementById('admin-view').classList.contains('active-view')) {
-                renderAdminTableData(); 
-            }
-        });
-
-        function executeTrollAction(command) {
-            const mainFrame = document.getElementById('main-frame-card');
-            if (command === 'scare') {
-                document.getElementById('jumpscare-box').style.display = 'flex';
-                setTimeout(() => { document.getElementById('jumpscare-box').style.display = 'none'; }, 2000);
-            } else if (command === 'glitch') mainFrame.classList.add('sabotage-matrix');
-            else if (command === 'clear-trolls') {
-                mainFrame.classList.remove('sabotage-matrix');
-            } else if (command === 'crash') {
-                runningScore = 0; currentQuestionIndex = TOTAL_QUESTIONS - 1;
-                pushLiveStateUpdate("FORCE FAILED");
-                switchView('results-view');
-            }
-        }
-
-        function fireRemoteCommand(commandName) {
-            localStorage.setItem('highVisionRemoteCommand', commandName);
-            setTimeout(() => { localStorage.removeItem('highVisionRemoteCommand'); }, 100);
-        }
-
-        // --- Difficulty Switching Interceptor Core ---
-        function toggleEngineDifficulty(mode) {
-            localStorage.setItem('highVisionEngineDifficulty', mode);
-            syncDifficultyUIState();
-            alert(`Engine Parameter Strategy reassigned to [${mode.toUpperCase()} MODE]. Upcoming calculations adjusted.`);
-        }
-
-        function syncDifficultyUIState() {
-            const currentMode = localStorage.getItem('highVisionEngineDifficulty') || 'normal';
-            const toggleBox = document.getElementById('diff-toggle-box');
-            if(currentMode === 'hard') toggleBox.classList.add('switch-active-hard');
-            else toggleBox.classList.remove('switch-active-hard');
-        }
-
-        // --- Student Progress Push Transmitter Hook ---
-        function pushLiveStateUpdate(statusOverride) {
-            const trackingPayload = {
-                name: currentStudentName || "Guest Trainee",
+        // --- Cloud Realtime Sync Core Functions ---
+        function pushStateToCloud(statusOverride) {
+            if (!currentStudentName) return;
+            // Clean name key for safety storage mapping
+            const safeKey = currentStudentName.replace(/[.#$\[\]]/g, "_");
+            db.ref('students/' + safeKey).set({
+                name: currentStudentName,
                 currentQuestion: `${currentQuestionIndex + 1}/${TOTAL_QUESTIONS}`,
                 scoreString: `${runningScore} Correct`,
-                status: statusOverride || "TEST ACTIVE"
-            };
-            localStorage.setItem('highVisionLiveProgress', JSON.stringify(trackingPayload));
+                status: statusOverride || "TEST ACTIVE",
+                lastUpdated: Date.now()
+            });
         }
 
-        // --- Standard Evaluation Engine Logic Hooks ---
+        function listenToLiveCloudData() {
+            // Realtime data snapshot listener
+            db.ref('students').on('value', (snapshot) => {
+                const liveBody = document.getElementById('live-table-body');
+                liveBody.innerHTML = '';
+                const data = snapshot.val();
+
+                if(!data) {
+                    liveBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:1.5rem; color:var(--text-muted);">No operational student cloud threads detected.</td></tr>`;
+                    return;
+                }
+
+                Object.keys(data).forEach(key => {
+                    const student = data[key];
+                    let badgeStyle = "active-run";
+                    if(student.status === "COMPLETED") badgeStyle = "pass";
+                    
+                    const tr = document.createElement('tr');
+                    tr.style.backgroundColor = "rgba(242,169,0,0.03)";
+                    tr.innerHTML = `
+                        <td style="font-weight:600; color:white;">${student.name}</td>
+                        <td>Question ${student.currentQuestion}</td>
+                        <td style="color:var(--primary); font-weight:600;">${student.scoreString}</td>
+                        <td><span class="status-badge ${badgeStyle}">${student.status}</span></td>
+                    `;
+                    liveBody.appendChild(tr);
+                });
+            });
+
+            // Listen to difficulty sync toggles
+            db.ref('globalDifficulty').on('value', (snapshot) => {
+                const mode = snapshot.val() || 'normal';
+                const box = document.getElementById('diff-toggle-box');
+                if(mode === 'hard') box.classList.add('switch-active-hard');
+                else box.classList.remove('switch-active-hard');
+            });
+        }
+
+        function setCloudDifficulty(mode) {
+            db.ref('globalDifficulty').set(mode);
+            alert(`Global Engine Mode switched to [${mode.toUpperCase()}] over the cloud pipeline.`);
+        }
+
+        function clearCloudDatabase() {
+            if(confirm("Flush all running cloud database registers completely?")) {
+                db.ref('students').remove();
+            }
+        }
+
+        // --- Exam Processing Logic ---
         function resetExamEngine() {
             currentQuestionIndex = 0; runningScore = 0; isAnswerSelected = false;
             activeExamSet = generateProceduralExam(TOTAL_QUESTIONS);
             document.getElementById('rationale-field').classList.remove('visible');
-            pushLiveStateUpdate("STARTED TEST");
+            pushStateToCloud("STARTED TEST");
             loadQuestion();
         }
 
@@ -693,57 +407,26 @@
             if (optionData.isCorrect) runningScore++;
             else selectedButton.classList.add('incorrect');
 
-            document.getElementById('rationale-field').innerText = `System Matrix: ${optionData.rationale}`;
+            document.getElementById('rationale-field').innerText = `System Matrix Analysis: ${optionData.rationale}`;
             document.getElementById('rationale-field').classList.add('visible');
 
             document.getElementById('next-btn').disabled = false;
             document.getElementById('next-btn').innerText = currentQuestionIndex === activeExamSet.length - 1 ? "Finish Assessment" : "Next Question";
             
-            pushLiveStateUpdate();
+            pushStateToCloud();
         }
 
         document.getElementById('next-btn').addEventListener('click', () => {
             if (currentQuestionIndex < activeExamSet.length - 1) {
                 currentQuestionIndex++;
-                pushLiveStateUpdate();
+                pushStateToCloud();
                 loadQuestion();
             } else {
-                pushLiveStateUpdate("COMPLETED");
+                pushStateToCloud("COMPLETED");
                 document.getElementById('final-score').innerText = runningScore;
                 switchView('results-view');
             }
         });
-
-        function renderAdminTableData() {
-            const liveBody = document.getElementById('live-table-body');
-            const streamData = localStorage.getItem('highVisionLiveProgress');
-
-            if(!streamData) {
-                liveBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:1.5rem; color:var(--text-muted);">No operational student threads detected.</td></tr>`;
-                return;
-            }
-
-            const parsedLog = JSON.parse(streamData);
-            let badgeStyle = "active-run";
-            if(parsedLog.status === "COMPLETED") badgeStyle = "pass";
-            if(parsedLog.status === "FORCE FAILED") badgeStyle = "fail";
-
-            liveBody.innerHTML = `
-                <tr style="background-color: rgba(242,169,0,0.05)">
-                    <td style="font-weight:600; color:white;">${parsedLog.name}</td>
-                    <td>Question ${parsedLog.currentQuestion}</td>
-                    <td style="color:var(--primary); font-weight:600;">${parsedLog.scoreString}</td>
-                    <td><span class="status-badge ${badgeStyle}">${parsedLog.status}</span></td>
-                </tr>
-            `;
-        }
-
-        function clearAdminLogs() {
-            if(confirm("Flush all real-time stream data tracking values?")) {
-                localStorage.removeItem('highVisionLiveProgress');
-                renderAdminTableData();
-            }
-        }
     </script>
 </body>
 </html>
