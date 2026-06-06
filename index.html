@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>High Vision | Engineering Examination Portal</title>
+    <title>High Vision | Autonomous Exam Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Modern CSS Variables & Resets */
         * {
             margin: 0;
             padding: 0;
@@ -15,13 +14,13 @@
         }
 
         :root {
-            --primary: #f2a900;       /* Premium Gold / Accent */
-            --dark-bg: #0f172a;      /* Deep Slate Base */
-            --card-bg: #1e293b;      /* Muted Slate Card Surface */
-            --text-main: #f8fafc;    /* Bright Text */
-            --text-muted: #94a3b8;   /* Gray Secondary Text */
-            --success: #10b981;      /* Emerald Green for correct feedback */
-            --error: #ef4444;        /* Crimson Red for incorrect feedback */
+            --primary: #f2a900;       
+            --dark-bg: #0f172a;      
+            --card-bg: #1e293b;      
+            --text-main: #f8fafc;    
+            --text-muted: #94a3b8;   
+            --success: #10b981;      
+            --error: #ef4444;        
         }
 
         body {
@@ -32,7 +31,6 @@
             min-height: 100vh;
         }
 
-        /* Top Navigation Header */
         header {
             background-color: #020617;
             padding: 1.25rem 10%;
@@ -61,7 +59,6 @@
             font-weight: 600;
         }
 
-        /* Container & Grid Layout */
         main {
             flex: 1;
             display: flex;
@@ -76,11 +73,10 @@
             max-width: 750px;
             border-radius: 12px;
             padding: 2.5rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
             border-left: 5px solid var(--primary);
         }
 
-        /* Progress Bar Indicators */
         .progress-wrapper {
             display: flex;
             justify-content: space-between;
@@ -105,12 +101,11 @@
 
         .progress-bar-inner {
             height: 100%;
-            width: 10%;
+            width: 0%;
             background-color: var(--primary);
             transition: width 0.4s ease;
         }
 
-        /* Question & Option Styling */
         .question-text {
             font-size: 1.35rem;
             font-weight: 600;
@@ -135,7 +130,6 @@
             font-size: 1rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            position: relative;
         }
 
         .option-btn:hover:not([disabled]) {
@@ -144,7 +138,6 @@
             transform: translateX(4px);
         }
 
-        /* Feedback Processing Classes */
         .option-btn.correct {
             background-color: rgba(16, 185, 129, 0.15) !important;
             border-color: var(--success) !important;
@@ -158,7 +151,6 @@
             color: #ef4444;
         }
 
-        /* Explanatory Rationale Box */
         .rationale-box {
             margin-top: 1.5rem;
             padding: 1.25rem;
@@ -174,7 +166,6 @@
             display: block;
         }
 
-        /* Navigation Button Structure */
         .action-wrapper {
             margin-top: 2rem;
             display: flex;
@@ -190,21 +181,14 @@
             border-radius: 6px;
             cursor: pointer;
             font-size: 1rem;
-            transition: opacity 0.2s ease, transform 0.1s ease;
-        }
-
-        .next-btn:hover {
-            transform: translateY(-1px);
-            background-color: #e09d00;
+            transition: all 0.2s ease;
         }
 
         .next-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
-            transform: none;
         }
 
-        /* Results Screen Layout */
         .results-screen {
             text-align: center;
             display: none;
@@ -248,7 +232,6 @@
             color: #020617;
         }
 
-        /* Footer Rules */
         footer {
             background-color: #020617;
             text-align: center;
@@ -263,27 +246,25 @@
 
     <header>
         <div class="logo">HIGH<span>VISION</span></div>
-        <div class="portal-tag">Technical Assessment</div>
+        <div class="portal-tag">Algorithmic Math Generator</div>
     </header>
 
     <main>
         <div class="quiz-container">
             <div id="quiz-window">
                 <div class="progress-wrapper">
-                    <span class="progress-text" id="question-counter">Question 1 of 10</span>
+                    <span class="progress-text" id="question-counter">Question 1 of 20</span>
                 </div>
                 <div class="progress-bar-outer">
                     <div class="progress-bar-inner" id="progress-bar"></div>
                 </div>
                 
                 <div style="margin-top: 2rem;">
-                    <h2 class="question-text" id="question-field">Loading technical blueprint challenge question...</h2>
-                    <div class="options-list" id="options-field">
-                        </div>
+                    <h2 class="question-text" id="question-field">Compiling procedural algorithm parameters...</h2>
+                    <div class="options-list" id="options-field"></div>
                 </div>
 
-                <div class="rationale-box" id="rationale-field">
-                    </div>
+                <div class="rationale-box" id="rationale-field"></div>
 
                 <div class="action-wrapper">
                     <button class="next-btn" id="next-btn" disabled>Submit Answer</button>
@@ -292,118 +273,117 @@
 
             <div id="results-window" class="results-screen">
                 <h2>Evaluation Complete</h2>
-                <p>Construction Engineering Core Diagnostics Metrics</p>
-                <div class="score-display"><span id="final-score">0</span> / 10</div>
-                <p class="results-summary-text" id="performance-feedback">Analyzing performance parameters...</p>
-                <button class="restart-btn" onclick="initializeExam()">Retake Examination</button>
+                <p>Mathematical Construction Diagnostics Dashboard</p>
+                <div class="score-display"><span id="final-score">0</span> / 20</div>
+                <p class="results-summary-text" id="performance-feedback">Processing data...</p>
+                <button class="restart-btn" onclick="resetExamEngine()">Generate Completely New Exam Set</button>
             </div>
         </div>
     </main>
 
     <footer>
-        &copy; 2026 High Vision Construction Infrastructure. Quality Control & Engineering Diagnostics Portal.
+        &copy; 2026 High Vision AI Infrastructure Systems. Real-Time Math Automation Active.
     </footer>
 
     <script>
-        // High-end structured technical questions array
-        const examDatabase = [
-            {
-                question: "When performing structural analysis for a new commercial development, which factor primarily determines the design's ultimate limit state (ULS)?",
-                options: [
-                    { text: "The structural safety and prevention of collapse under extreme loading conditions.", isCorrect: true, rationale: "The ultimate limit state focuses entirely on structural integrity, safety, and preventing catastrophic failure or collapse under extreme criteria." },
-                    { text: "The operational criteria and aesthetic appearance under everyday loading.", isCorrect: false, rationale: "Deflection, vibration, and minor surface cracking fall under the serviceability limit state (SLS), not ULS." },
-                    { text: "The initial material procurement costs and supply chain constraints.", isCorrect: false, rationale: "Logistical pricing targets are project management constraints rather than engineering design limit states." },
-                    { text: "The aesthetic integration with surrounding historical civil zoning.", isCorrect: false, rationale: "Zoning integration is a regulatory and architectural mandate, not a core structural limit calculation." }
-                ]
-            },
-            {
-                question: "In project scheduling, what defines an activity that lies on the 'Critical Path'?",
-                options: [
-                    { text: "Any task that requires high-end specialized engineering machinery.", isCorrect: false, rationale: "Equipment intensity does not make a path critical; topological sequence dependencies do." },
-                    { text: "An activity with zero total float, meaning any delay directly extends the project completion date.", isCorrect: true, rationale: "The critical path encompasses the precise sequence of dependent tasks that directly dictates the absolute minimum duration of the construction timeline." },
-                    { text: "Tasks that are legally mandated to be completed during the initial groundbreaking phase.", isCorrect: false, rationale: "Groundbreaking constraints represent project milestones rather than a dynamic sequence running across the schedule layout." },
-                    { text: "Activities that consume more than 50% of the total allocated structural budget.", isCorrect: false, rationale: "Critical paths evaluate time dependencies and float windows, not total financial allocation metrics." }
-                ]
-            },
-            {
-                question: "During a concrete slump test on a job site, a very high slump measurement most likely indicates which of the following properties?",
-                options: [
-                    { text: "High workability but a potential reduction in ultimate structural strength due to excess water.", isCorrect: true, rationale: "A high slump means the mixture flows easily, signaling a elevated water-to-cement ratio which typically reduces internal cross-linking strength once cured." },
-                    { text: "Excellent early-age strength development and low permeability.", isCorrect: false, rationale: "Excess water leads to increased internal micro-porosity, weakening structural properties." },
-                    { text: "The mix contains insufficient water and will be difficult to compact.", isCorrect: false, rationale: "Low slump values indicate dry, stiff structures that are hard to consolidate." },
-                    { text: "An optimal air-entrainment ratio ideal for sub-zero freezing environments.", isCorrect: false, rationale: "Slump metrics evaluate immediate mechanical consistency and workability, not microscopic air-void patterns." }
-                ]
-            },
-            {
-                question: "Which civil site planning tool is primarily used to analyze and design balanced cut-and-fill volumes during earthwork operations?",
-                options: [
-                    { text: "Mass haul diagram", isCorrect: true, rationale: "A mass haul diagram accurately tracks cumulative net earthwork volumes along structural profiles, minimizing hauling logistics costs." },
-                    { text: "Finite element mesh", isCorrect: false, rationale: "Finite element solvers calculate localized structural stress distributions, not global macroscopic site excavation data." },
-                    { text: "Gantt chart", isCorrect: false, rationale: "Gantt systems organize project time allocations rather than physical volumetric earth layouts." },
-                    { text: "Schematic structural blueprint", isCorrect: false, rationale: "Standard blueprints demonstrate design geometry dimensions but do not track cumulative earth-volume distribution metrics dynamically." }
-                ]
-            },
-            {
-                question: "What is the primary engineering purpose of installing retaining walls with weep holes?",
-                options: [
-                    { text: "To reduce hydrostatic pressure by allowing trapped groundwater to escape from behind the wall.", isCorrect: true, rationale: "Saturated soils put immense hydraulic lateral force on barriers; weep holes relieve fluid build-up to avoid structural turning failures." },
-                    { text: "To provide structural anchor points for secondary reinforcing steel ties.", isCorrect: false, rationale: "Weep configurations act solely as structural drainage, not mechanical tie-backs." },
-                    { text: "To improve architectural aesthetics and conform to local civil zoning rules.", isCorrect: false, rationale: "These are purely functional civil drainage mechanisms, not ornamental design elements." },
-                    { text: "To allow fresh air circulation to speed up the concrete curing pipeline.", isCorrect: false, rationale: "Retaining structures are completely cured prior to applying fill sand and facing hydrological loading." }
-                ]
-            },
-            {
-                question: "In foundation engineering, when is a deep foundation system (like driven piles or drilled shafts) required over a shallow mat foundation?",
-                options: [
-                    { text: "When the upper soil strata lack the bearing capacity to support the heavy structural loads safely.", isCorrect: true, rationale: "Deep foundation structures tunnel past superficial weak strata to safely lock the structure's structural loads into deeper bedrock configurations." },
-                    { text: "Whenever the project layout relies entirely on precast structural steel beams.", isCorrect: false, rationale: "Foundation specifications depend entirely on soil loading criteria and bearing capacities, not superstructure metal selections." },
-                    { text: "To minimize the total excavation cost on simple, single-story light frameworks.", isCorrect: false, rationale: "Deep foundations require advanced equipment setups, making them cost-inefficient for simple, light structures with strong surface soils." },
-                    { text: "When the groundwater table is completely non-existent throughout the site profile.", isCorrect: false, rationale: "The absence of a water table actually simplifies shallow pad implementations rather than forcing deep pile setups." }
-                ]
-            },
-            {
-                question: "Which of the following describes a key quality control step during the compaction of an asphalt runway or roadway?",
-                options: [
-                    { text: "Monitoring the layout strictly using ultrasonic echo localization matrices.", isCorrect: false, rationale: "Ultrasonic techniques are intended for internal material void checking in cast metals/concrete, not rolling track density logs." },
-                    { text: "Verifying the in-place density using a nuclear gauge or core sampling against reference laboratory density.", isCorrect: true, rationale: "Ensuring proper target material density prevents premature pavement fatigue, structural rutting, and pothole development." },
-                    { text: "Adding extra water immediately behind the roller to cool the asphalt quickly.", isCorrect: false, rationale: "Shocking freshly laid asphalt with surface water can cause thermal structural cracking and micro-fissuring." },
-                    { text: "Ensuring the structural blueprints are completely printed on-site before rolling begins.", isCorrect: false, rationale: "Physical field instrumentation testing defines the quality control pipeline action, not documentation logistics." }
-                ]
-            },
-            {
-                question: "What does a negative value for 'Total Float' in a construction schedule indicate to a project manager?",
-                options: [
-                    { text: "The project is currently ahead of schedule and under budget constraints.", isCorrect: false, rationale: "Negative values imply that scheduling targets have been broken, indicating delays." },
-                    { text: "Activities have been completed using fewer engineering man-hours than estimated.", isCorrect: false, rationale: "Float maps execution timelines and flexibility metrics, not human-hour ledger accounts." },
-                    { text: "The schedule is delayed, and the current sequence cannot meet the required milestone completion date.", isCorrect: true, rationale: "Negative float fields occur when operational dependencies mathematically demand more time than the hard contract deadline permits." },
-                    { text: "The structural design needs immediate re-evaluation using finite element tools.", isCorrect: false, rationale: "A critical float deficit indicates a project management scheduling layout conflict, not an inherent material failure risk." }
-                ]
-            },
-            {
-                question: "In reinforced concrete structures, what is the primary role of steel rebar placed in the bottom section of a simply supported horizontal beam?",
-                options: [
-                    { text: "To absorb and resist tensile stresses, as concrete is weak in tension.", isCorrect: true, rationale: "When loaded downwards, the underside of a simply supported structural element undergoes tension forces; steel is introduced there to compensate for concrete's low tensile performance." },
-                    { text: "To lower the overall dead weight of the concrete structural element.", isCorrect: false, rationale: "Structural steel is substantially denser than concrete mixes, adding to overall dead mass loads." },
-                    { text: "To prevent environmental chemical corrosion of the outer concrete skin layer.", isCorrect: false, rationale: "Inner steel reinforcement structural layouts depend on concrete coverage depth to protect them from external elements, not vice versa." },
-                    { text: "To maximize the initial hydration temperature during the pouring pipeline.", isCorrect: false, rationale: "Hydration is an exothermic chemical process; core structural steel bars do not serve as thermal reactions catalysts." }
-                ]
-            },
-            {
-                question: "Which safety management protocol is critical before executing any deep structural trench excavation?",
-                options: [
-                    { text: "Applying a high-gloss protective sealant along the trench bed floors.", isCorrect: false, rationale: "Sealants offer zero resistance to sudden soil cave-ins, which remain the primary site threat during digging operations." },
-                    { text: "Implementing reliable shoring, shielding, or sloping systems to prevent cave-ins.", isCorrect: true, rationale: "Unsupported dirt configurations can slide without warning. Engineered structural shoring or benching frameworks are mandatory parameters for safety." },
-                    { text: "Ensuring all civil blueprints are uploaded directly to public repositories.", isCorrect: false, rationale: "Repository version file management has zero influence over physical site dirt physics stability risks." },
-                    { text: "Accelerating project schedule activities to eliminate critical paths entirely.", isCorrect: false, rationale: "Rushing site activity pipelines often causes safety protocols to be bypassed, introducing extreme risk hazards." }
-                ]
-            }
-        ];
-
+        const TOTAL_QUESTIONS = 20;
         let currentQuestionIndex = 0;
         let runningScore = 0;
         let isAnswerSelected = false;
+        let activeExamSet = [];
 
-        // Element Selectors
+        function shuffle(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // --- Algorithmic Template Generation Logic ---
+        const questionGenerators = [
+            function() {
+                const cement = Math.floor(Math.random() * 150) + 300; 
+                const ratio = (Math.floor(Math.random() * 20) + 40) / 100; 
+                const correctWater = parseFloat((cement * ratio).toFixed(1));
+                return {
+                    question: `A batch of fresh concrete requires ${cement} kg of cement. If the structural specification demands a Water-to-Cement (W/C) ratio of exactly ${ratio}, calculate the precise weight of water needed for optimal hydration matrix mix.`,
+                    correctAnswer: `${correctWater} kg`,
+                    distractors: [`${(correctWater + 25.5).toFixed(1)} kg`, `${(correctWater - 18.2).toFixed(1)} kg`, `${(cement * 0.35).toFixed(1)} kg`],
+                    rationale: `Water weight is calculated by multiplying the cement weight by the target ratio: ${cement} * ${ratio} = ${correctWater} kg.`
+                };
+            },
+            function() {
+                const earlyStart = Math.floor(Math.random() * 10) + 5; 
+                const duration = Math.floor(Math.random() * 12) + 4;
+                const lateFinish = earlyStart + duration + Math.floor(Math.random() * 6) + 2;
+                const earlyFinish = earlyStart + duration;
+                const correctFloat = lateFinish - earlyFinish;
+                return {
+                    question: `An infrastructure task has an Early Start (ES) day of ${earlyStart}, a duration of ${duration} days, and a Late Finish (LF) deadline of day ${lateFinish}. Calculate the Total Float value for this task.`,
+                    correctAnswer: `${correctFloat} days`,
+                    distractors: [`${correctFloat + 3} days`, `0 days`, `${Math.abs(earlyStart - duration)} days`],
+                    rationale: `Early Finish (EF) = ES + Duration (${earlyStart} + ${duration} = ${earlyFinish}). Total Float = LF - EF (${lateFinish} - ${earlyFinish} = ${correctFloat} days).`
+                };
+            },
+            function() {
+                const height = Math.floor(Math.random() * 5) + 3; 
+                const density = 10; 
+                const pressure = height * density;
+                return {
+                    question: `A subterranean concrete retaining wall holds back liquid-saturated silty earth with a height profile of ${height} meters. Taking the hydrostatic weight fluid density parameter as ${density} kN/m³, what is the maximum lateral horizontal pressure at the absolute bottom heel point of the wall?`,
+                    correctAnswer: `${pressure} kN/m²`,
+                    distractors: [`${(pressure / 2).toFixed(1)} kN/m²`, `${(pressure * 1.5).toFixed(1)} kN/m²`, `${pressure + 15} kN/m²`],
+                    rationale: `Hydrostatic base fluid pressure climbs linearly with depth: Pressure = Density * Height (${density} * ${height} = ${pressure} kN/m²).`
+                };
+            },
+            function() {
+                const length = Math.floor(Math.random() * 6) + 4; 
+                const load = Math.floor(Math.random() * 15) + 10; 
+                const maxBendingMoment = parseFloat(((load * length * length) / 8).toFixed(1));
+                return {
+                    question: `A simply supported structural steel horizontal layout beam spans a distance of ${length} meters. It supports a uniform dead load configuration of ${load} kN/m across its entire horizontal run. Calculate the peak maximum bending moment acting on the center span.`,
+                    correctAnswer: `${maxBendingMoment} kNm`,
+                    distractors: [`${(load * length).toFixed(1)} kNm`, `${((load * length * length) / 4).toFixed(1)} kNm`, `${(maxBendingMoment - 12.5).toFixed(1)} kNm`],
+                    rationale: `The peak bending moment equation for an evenly distributed load is M = (w * L²) / 8. Calculating gives: (${load} * ${length}²) / 8 = ${maxBendingMoment} kNm.`
+                };
+            },
+            function() {
+                const cutVol = Math.floor(Math.random() * 5000) + 8000;
+                const fillVol = Math.floor(Math.random() * 4000) + 4000;
+                const balance = cutVol - fillVol;
+                return {
+                    question: `A mass haul site analysis logs a localized excavation profile of ${cutVol} m³ of heavy soil cut, while the downroad highway leveling zone calls for ${fillVol} m³ of aggregate compact fill. What is the net volumetric earthwork status before accounting for soil swell factors?`,
+                    correctAnswer: `${balance} m³ surplus (export required)`,
+                    distractors: [`${balance} m³ deficit (import required)`, `${cutVol + fillVol} m³ balanced`, `0 m³ matrix net`],
+                    rationale: `Net calculation = Cut Volume - Fill Volume (${cutVol} - ${fillVol} = ${balance} m³). Since the value is positive, it signifies an excess surplus layout.`
+                };
+            }
+        ];
+
+        function generateProceduralExam(targetCount) {
+            let uniqueGeneratedSet = [];
+            for (let i = 0; i < targetCount; i++) {
+                const randomGeneratorIndex = Math.floor(Math.random() * questionGenerators.length);
+                const generatedRawData = questionGenerators[randomGeneratorIndex]();
+
+                let formattedQuestion = {
+                    question: generatedRawData.question,
+                    options: [
+                        { text: generatedRawData.correctAnswer, isCorrect: true, rationale: generatedRawData.rationale },
+                        { text: generatedRawData.distractors[0], isCorrect: false, rationale: "Incorrect calculated value variable path choice." },
+                        { text: generatedRawData.distractors[1], isCorrect: false, rationale: "Incorrect mathematical scaling limit threshold value." },
+                        { text: generatedRawData.distractors[2], isCorrect: false, rationale: "Incorrect equation optimization tracking choice." }
+                    ]
+                };
+
+                formattedQuestion.options = shuffle(formattedQuestion.options);
+                uniqueGeneratedSet.push(formattedQuestion);
+            }
+            return uniqueGeneratedSet;
+        }
+
+        // DOM Elements
         const quizWindow = document.getElementById('quiz-window');
         const resultsWindow = document.getElementById('results-window');
         const questionCounter = document.getElementById('question-counter');
@@ -415,12 +395,31 @@
         const finalScoreField = document.getElementById('final-score');
         const performanceFeedback = document.getElementById('performance-feedback');
 
-        // Application State Controller Engine
-        function initializeExam() {
+        // --- CRITICAL FIXED: THE COMPREHENSIVE RESET ENGINE ---
+        function resetExamEngine() {
+            // 1. Reset variables to absolute ground zero
             currentQuestionIndex = 0;
             runningScore = 0;
+            isAnswerSelected = false;
+            activeExamSet = [];
+
+            // 2. Erase existing UI text fields and styling states 
+            rationaleField.innerText = '';
+            rationaleField.classList.remove('visible');
+            optionsField.innerHTML = '';
+            
+            // 3. Reset buttons state securely
+            nextBtn.disabled = true;
+            nextBtn.innerText = "Submit Answer";
+
+            // 4. Interface visibility swapping
             resultsWindow.style.display = 'none';
             quizWindow.style.display = 'block';
+
+            // 5. Fire completely brand new randomized math formulas array
+            activeExamSet = generateProceduralExam(TOTAL_QUESTIONS);
+
+            // 6. Push freshly mounted question data to the window
             loadQuestion();
         }
 
@@ -431,14 +430,13 @@
             rationaleField.classList.remove('visible');
             optionsField.innerHTML = '';
 
-            // Update UI Counters
-            const currentQuestion = examDatabase[currentQuestionIndex];
-            questionCounter.innerText = `Question ${currentQuestionIndex + 1} of ${examDatabase.length}`;
-            progressBar.style.width = `${((currentQuestionIndex + 1) / examDatabase.length) * 100}%`;
+            const currentQuestion = activeExamSet[currentQuestionIndex];
+            
+            questionCounter.innerText = `Question ${currentQuestionIndex + 1} of ${activeExamSet.length}`;
+            progressBar.style.width = `${((currentQuestionIndex + 1) / activeExamSet.length) * 100}%`;
             questionField.innerText = currentQuestion.question;
 
-            // Render Option Buttons
-            currentQuestion.options.forEach((option, index) => {
+            currentQuestion.options.forEach(option => {
                 const button = document.createElement('button');
                 button.classList.add('option-btn');
                 button.innerText = option.text;
@@ -448,33 +446,30 @@
         }
 
         function handleOptionSelection(selectedButton, optionData) {
-            if (isAnswerSelected) return; // Prevent clicking multiple options
+            if (isAnswerSelected) return;
             isAnswerSelected = true;
 
             const allButtons = optionsField.querySelectorAll('.option-btn');
             
-            // Loop through options to flag correct/incorrect elements
             allButtons.forEach(btn => {
-                btn.disabled = true; // Lockdown interface input
-                const diagnosticLabel = examDatabase[currentQuestionIndex].options.find(o => o.text === btn.innerText);
-                if (diagnosticLabel.isCorrect) {
-                    btn.classList.add('correct'); // Highlight answer key correct
+                btn.disabled = true; 
+                const checkOption = activeExamSet[currentQuestionIndex].options.find(o => o.text === btn.innerText);
+                if (checkOption.isCorrect) {
+                    btn.classList.add('correct'); 
                 }
             });
 
             if (optionData.isCorrect) {
                 runningScore++;
             } else {
-                selectedButton.classList.add('incorrect'); // Tag chosen wrong item
+                selectedButton.classList.add('incorrect'); 
             }
 
-            // Expose rationales UI text
-            rationaleField.innerText = `Diagnostic Insight: ${optionData.rationale}`;
+            rationaleField.innerText = `System Calculation Derivation: ${optionData.rationale}`;
             rationaleField.classList.add('visible');
 
-            // Shift navigation utility state
             nextBtn.disabled = false;
-            if (currentQuestionIndex === examDatabase.length - 1) {
+            if (currentQuestionIndex === activeExamSet.length - 1) {
                 nextBtn.innerText = "Finish Assessment";
             } else {
                 nextBtn.innerText = "Next Question";
@@ -482,7 +477,7 @@
         }
 
         nextBtn.addEventListener('click', () => {
-            if (currentQuestionIndex < examDatabase.length - 1) {
+            if (currentQuestionIndex < activeExamSet.length - 1) {
                 currentQuestionIndex++;
                 loadQuestion();
             } else {
@@ -495,18 +490,19 @@
             resultsWindow.style.display = 'block';
             finalScoreField.innerText = runningScore;
 
-            // Define technical evaluation review commentary
-            if (runningScore >= 9) {
-                performanceFeedback.innerText = "Excellent capability. You have demonstrated master-level precision regarding high-end structural analytics, project execution layout optimization, and quality control pipeline workflows.";
-            } else if (runningScore >= 7) {
-                performanceFeedback.innerText = "Strong core engineering knowledge base. Competent structural calculation principles and material management tracking capabilities verified.";
+            const successRatio = (runningScore / TOTAL_QUESTIONS) * 100;
+
+            if (successRatio >= 90) {
+                performanceFeedback.innerText = "Master Elite Standard. Your calculations match professional architectural quality pipeline guidelines flawlessly.";
+            } else if (successRatio >= 70) {
+                performanceFeedback.innerText = "Solid computation work. Formula balancing parameters fall safely within normal construction limits.";
             } else {
-                performanceFeedback.innerText = "Review of technical structural blueprints, hydrostatic analysis variables, and project critical-path float calculations recommended to align with standard project standards.";
+                performanceFeedback.innerText = "Mathematical precision check required. Try running a new configuration set to optimize formula applications.";
             }
         }
 
-        // Initialize exam upon load loop
-        window.onload = initializeExam;
+        // Initialize exam upon system boot sequence
+        window.onload = resetExamEngine;
     </script>
 </body>
 </html>
