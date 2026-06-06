@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>High Vision | Autonomous Exam Engine</title>
+    <title>High Vision | Enterprise Exam Matrix & Live Admin Command</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * {
@@ -21,6 +21,7 @@
             --text-muted: #94a3b8;   
             --success: #10b981;      
             --error: #ef4444;        
+            --troll: #a855f7;
         }
 
         body {
@@ -29,6 +30,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            overflow-x: hidden;
         }
 
         header {
@@ -38,6 +40,7 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid #1e293b;
+            z-index: 10;
         }
 
         .logo {
@@ -51,12 +54,26 @@
             color: var(--primary);
         }
 
-        .portal-tag {
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            background-color: transparent;
+            border: 1px solid #334155;
+            color: var(--text-main);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
             font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--text-muted);
-            font-weight: 600;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            border-color: var(--primary);
+            color: var(--primary);
         }
 
         main {
@@ -65,16 +82,27 @@
             justify-content: center;
             align-items: center;
             padding: 2rem 1rem;
+            position: relative;
         }
 
         .quiz-container {
             background-color: var(--card-bg);
             width: 100%;
-            max-width: 750px;
+            max-width: 950px;
             border-radius: 12px;
             padding: 2.5rem;
             box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
             border-left: 5px solid var(--primary);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .view-section {
+            display: none;
+        }
+
+        .view-section.active-view {
+            display: block;
         }
 
         .progress-wrapper {
@@ -117,7 +145,6 @@
             display: flex;
             flex-direction: column;
             gap: 1rem;
-            list-style: none;
         }
 
         .option-btn {
@@ -170,9 +197,10 @@
             margin-top: 2rem;
             display: flex;
             justify-content: flex-end;
+            gap: 1rem;
         }
 
-        .next-btn {
+        .next-btn, .admin-action-btn {
             background-color: var(--primary);
             color: #020617;
             border: none;
@@ -191,67 +219,207 @@
 
         .results-screen {
             text-align: center;
-            display: none;
-        }
-
-        .results-screen h2 {
-            font-size: 2.25rem;
-            margin-bottom: 1rem;
-            color: var(--primary);
         }
 
         .score-display {
             font-size: 4rem;
             font-weight: 700;
             margin: 1.5rem 0;
-            color: #ffffff;
         }
 
-        .results-summary-text {
+        .input-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
             color: var(--text-muted);
-            font-size: 1.1rem;
-            max-width: 500px;
-            margin: 0 auto 2rem auto;
-            line-height: 1.6;
+            font-size: 0.9rem;
         }
 
-        .restart-btn {
-            background-color: transparent;
-            border: 2px solid var(--primary);
-            color: var(--primary);
-            padding: 0.85rem 2.5rem;
-            font-weight: 600;
+        .input-group input {
+            width: 100%;
+            padding: 0.85rem;
+            background-color: #0f172a;
+            border: 1px solid #334155;
             border-radius: 6px;
-            cursor: pointer;
+            color: white;
             font-size: 1rem;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* --- Admin Matrix Dashboard Panels --- */
+        .admin-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+        @media(min-width: 900px) { .admin-grid { grid-template-columns: 1.8fr 1.2fr; } }
+
+        .control-card {
+            background-color: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .control-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.05rem;
+            border-bottom: 1px solid #1e293b;
+            padding-bottom: 0.5rem;
+        }
+
+        .troll-btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+        }
+
+        .troll-ctrl-btn {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+            color: var(--text-main);
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
             transition: all 0.2s ease;
         }
 
-        .restart-btn:hover {
-            background-color: var(--primary);
-            color: #020617;
+        .troll-ctrl-btn:hover {
+            border-color: var(--troll);
+            color: #d8b4fe;
+            transform: translateY(-1px);
         }
 
-        footer {
+        /* Difficulty Toggle Switch */
+        .difficulty-panel {
             background-color: #020617;
-            text-align: center;
-            padding: 1.5rem;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            border-top: 1px solid #1e293b;
+            padding: 1rem;
+            border-radius: 6px;
+            border: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
         }
+
+        .switch-btn {
+            padding: 0.6rem 1.2rem;
+            font-weight: 700;
+            border-radius: 4px;
+            cursor: pointer;
+            border: none;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .switch-normal { background-color: var(--success); color: #020617; }
+        .switch-hard { background-color: #334155; color: var(--text-muted); }
+
+        .switch-active-hard .switch-normal { background-color: #334155; color: var(--text-muted); }
+        .switch-active-hard .switch-hard { background-color: var(--error); color: white; animation: pulse 1s infinite alternate; }
+
+        @keyframes pulse { 0% { opacity: 0.8; } 100% { opacity: 1; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); } }
+
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            border-radius: 6px;
+            background-color: #0f172a;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.85rem;
+        }
+
+        th, td { padding: 0.85rem; border-bottom: 1px solid #1e293b; }
+        th { background-color: #020617; color: var(--primary); }
+
+        .status-badge { padding: 0.2rem 0.4rem; border-radius: 4px; font-size: 0.7rem; font-weight: 700; }
+        .status-badge.pass { background-color: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .status-badge.fail { background-color: rgba(239, 68, 68, 0.2); color: var(--error); }
+        .status-badge.active-run { background-color: rgba(242, 169, 0, 0.15); color: var(--primary); }
+
+        /* --- OVERLAYS FOR INTERFERENCES --- */
+        .lock-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(15, 23, 42, 0.97);
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 100; border-radius: 12px; text-align: center; padding: 2rem;
+        }
+
+        .scare-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: radial-gradient(circle, #ef4444, #000000);
+            display: none; justify-content: center; align-items: center;
+            z-index: 1000; color: white; font-size: 3.5rem; font-weight: 900;
+            animation: shake 0.1s infinite;
+        }
+
+        @keyframes shake {
+            0% { transform: translate(2px, 1px) rotate(0deg); }
+            10% { transform: translate(-1px, -2px) rotate(-1deg); }
+            20% { transform: translate(-3px, 0px) rotate(1deg); }
+            30% { transform: translate(0px, 2px) rotate(0deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            50% { transform: translate(-1px, 2px) rotate(-1deg); }
+        }
+
+        .sabotage-matrix { animation: matrixGlitch 0.4s infinite alternate !important; }
+        @keyframes matrixGlitch { 0% { filter: hue-rotate(0deg); transform: scale(1); } 100% { filter: hue-rotate(180deg); transform: scale(0.99) skewX(2deg); } }
+
+        footer { background-color: #020617; text-align: center; padding: 1.5rem; font-size: 0.85rem; color: var(--text-muted); border-top: 1px solid #1e293b; }
     </style>
 </head>
 <body>
 
+    <div id="jumpscare-box" class="scare-overlay">⚠️ EXAM COMPROMISED! ⚠️</div>
+
     <header>
         <div class="logo">HIGH<span>VISION</span></div>
-        <div class="portal-tag">Algorithmic Math Generator</div>
+        <div class="nav-buttons">
+            <button class="nav-btn active" id="nav-exam" onclick="switchView('login-view')">Student Portal</button>
+            <button class="nav-btn" id="nav-admin" onclick="switchView('admin-auth-view')">Admin Panel</button>
+        </div>
     </header>
 
     <main>
-        <div class="quiz-container">
-            <div id="quiz-window">
+        <div class="quiz-container" id="main-frame-card">
+            
+            <div id="lock-blocker" class="lock-overlay">
+                <h2 style="color: var(--error); font-size: 2rem; margin-bottom: 1rem;">🚨 PORTAL LOCKED BY ADMIN 🚨</h2>
+                <p style="color: var(--text-muted);">Your supervisor has frozen this tracking session execution temporarily.</p>
+            </div>
+
+            <div id="login-view" class="view-section active-view">
+                <h2 style="margin-bottom: 0.5rem; color: var(--primary);">Autonomous Assessment Portal</h2>
+                <p style="color: var(--text-muted); margin-bottom: 2rem;">Enter your name to launch real-time procedural structural calculations.</p>
+                <div class="input-group" style="max-width: 500px;">
+                    <label for="student-name">Student Full Name</label>
+                    <input type="text" id="student-name" placeholder="Enter name here...">
+                </div>
+                <div class="action-wrapper" style="justify-content: flex-start;">
+                    <button class="next-btn" onclick="startExamRegistration()">Initialize Examination</button>
+                </div>
+            </div>
+
+            <div id="quiz-view" class="view-section">
                 <div class="progress-wrapper">
                     <span class="progress-text" id="question-counter">Question 1 of 20</span>
                 </div>
@@ -260,29 +428,92 @@
                 </div>
                 
                 <div style="margin-top: 2rem;">
-                    <h2 class="question-text" id="question-field">Compiling procedural algorithm parameters...</h2>
+                    <h2 class="question-text" id="question-field">Compiling parameters...</h2>
                     <div class="options-list" id="options-field"></div>
                 </div>
-
                 <div class="rationale-box" id="rationale-field"></div>
-
                 <div class="action-wrapper">
                     <button class="next-btn" id="next-btn" disabled>Submit Answer</button>
                 </div>
             </div>
 
-            <div id="results-window" class="results-screen">
-                <h2>Evaluation Complete</h2>
-                <p>Mathematical Construction Diagnostics Dashboard</p>
+            <div id="results-view" class="view-section results-screen">
+                <h2>Evaluation Concluded</h2>
                 <div class="score-display"><span id="final-score">0</span> / 20</div>
                 <p class="results-summary-text" id="performance-feedback">Processing data...</p>
-                <button class="restart-btn" onclick="resetExamEngine()">Generate Completely New Exam Set</button>
+                <button class="next-btn" style="background-color: transparent; border: 2px solid var(--primary); color: var(--primary);" onclick="resetExamEngine()">Retake New Exam Set</button>
             </div>
+
+            <div id="admin-auth-view" class="view-section">
+                <h2 style="margin-bottom: 1rem; color: var(--primary);">Secure Access Vault</h2>
+                <div class="input-group" style="max-width: 350px;">
+                    <label>Master Admin PIN</label>
+                    <input type="password" id="admin-pin" placeholder="PIN Code (Default: 1234)">
+                </div>
+                <button class="next-btn" onclick="authenticateAdminGate()">Unlock Panel</button>
+            </div>
+
+            <div id="admin-view" class="view-section">
+                <h2 class="admin-title">Global Supervisor Command Core</h2>
+                
+                <div class="admin-grid">
+                    <div>
+                        <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--text-muted);">Live Classroom Tracking Screen</h3>
+                        <div class="table-responsive">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Student User</th>
+                                        <th>Current Question</th>
+                                        <th>Score Rate</th>
+                                        <th>Live Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="live-table-body"></tbody>
+                            </table>
+                        </div>
+                        <button class="admin-action-btn" style="background-color: var(--error); color: white; margin-top: 1rem; padding: 0.4rem 1rem; font-size: 0.8rem;" onclick="clearAdminLogs()">Reset Ledger Records</button>
+                    </div>
+
+                    <div>
+                        <div class="control-card" style="border-color: var(--error);">
+                            <h3>Global Engine Rule Tuning</h3>
+                            <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:0.75rem;">Force computational difficulty scaling in real-time.</p>
+                            <div class="difficulty-panel" id="diff-toggle-box">
+                                <span style="font-size:0.9rem; font-weight:600;">Engine Matrix Mode:</span>
+                                <div>
+                                    <button class="switch-btn switch-normal" onclick="toggleEngineDifficulty('normal')">Normal</button>
+                                    <button class="switch-btn switch-hard" onclick="toggleEngineDifficulty('hard')">HARD MODE</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="control-card">
+                            <h3>Active System Controls</h3>
+                            <div class="troll-btn-group">
+                                <button class="troll-ctrl-btn" onclick="fireRemoteCommand('lock')">🔒 Lock Screen</button>
+                                <button class="troll-ctrl-btn" onclick="fireRemoteCommand('unlock')">🔓 Unlock Screen</button>
+                            </div>
+                        </div>
+
+                        <div class="control-card" style="border-color: var(--troll);">
+                            <h3 style="color: #c084fc;">Troll Interferences</h3>
+                            <div class="troll-btn-group" style="grid-template-columns: 1fr;">
+                                <button class="troll-ctrl-btn" style="border-color: var(--error);" onclick="fireRemoteCommand('scare')">💥 Send Screen Jumpscare</button>
+                                <button class="troll-ctrl-btn" onclick="fireRemoteCommand('glitch')">👾 Trigger Matrix Glitch</button>
+                                <button class="troll-ctrl-btn" style="border-color: var(--error); color:var(--error);" onclick="fireRemoteCommand('crash')">☠️ Terminate & Fail Test</button>
+                                <button class="troll-ctrl-btn" style="border-color: var(--success); color: #10b981;" onclick="fireRemoteCommand('clear-trolls')">🔄 Restore Student View</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </main>
 
     <footer>
-        &copy; 2026 High Vision AI Infrastructure Systems. Real-Time Math Automation Active.
+        &copy; 2026 High Vision Control Automations. Real-time Process Tracking Active.
     </footer>
 
     <script>
@@ -291,6 +522,7 @@
         let runningScore = 0;
         let isAnswerSelected = false;
         let activeExamSet = [];
+        let currentStudentName = "";
 
         function shuffle(array) {
             for (let i = array.length - 1; i > 0; i--) {
@@ -300,148 +532,177 @@
             return array;
         }
 
-        // --- Algorithmic Template Generation Logic ---
+        // --- Procedural Math Engines (With Embedded Difficulty Scaling Logic) ---
         const questionGenerators = [
-            function() {
-                const cement = Math.floor(Math.random() * 150) + 300; 
-                const ratio = (Math.floor(Math.random() * 20) + 40) / 100; 
+            function(isHard) {
+                // Hard mode scaling coefficients
+                const multiplier = isHard ? 3 : 1;
+                const cement = (Math.floor(Math.random() * 150) + 300) * multiplier; 
+                const ratio = isHard ? 0.72 : (Math.floor(Math.random() * 20) + 40) / 100; 
                 const correctWater = parseFloat((cement * ratio).toFixed(1));
                 return {
-                    question: `A batch of fresh concrete requires ${cement} kg of cement. If the structural specification demands a Water-to-Cement (W/C) ratio of exactly ${ratio}, calculate the precise weight of water needed for optimal hydration matrix mix.`,
+                    question: `${isHard ? '[HARD MODE] ' : ''}A heavy high-load structural aggregate matrix requires ${cement} kg of premium industrial cement. If specialized moisture conditions call for a specific W/C scale matrix of exactly ${ratio}, calculate the ultimate precise weight of hydration water required.`,
                     correctAnswer: `${correctWater} kg`,
-                    distractors: [`${(correctWater + 25.5).toFixed(1)} kg`, `${(correctWater - 18.2).toFixed(1)} kg`, `${(cement * 0.35).toFixed(1)} kg`],
-                    rationale: `Water weight is calculated by multiplying the cement weight by the target ratio: ${cement} * ${ratio} = ${correctWater} kg.`
+                    distractors: [`${(correctWater + 31.4).toFixed(1)} kg`, `${(correctWater - 24.1).toFixed(1)} kg`, `${(cement * 0.31).toFixed(1)} kg`],
+                    rationale: `${cement} * ${ratio} = ${correctWater} kg.`
                 };
             },
-            function() {
-                const earlyStart = Math.floor(Math.random() * 10) + 5; 
-                const duration = Math.floor(Math.random() * 12) + 4;
+            function(isHard) {
+                const modifier = isHard ? 45 : 0;
+                const earlyStart = Math.floor(Math.random() * 10) + 5 + modifier; 
+                const duration = Math.floor(Math.random() * 12) + 4 + modifier;
                 const lateFinish = earlyStart + duration + Math.floor(Math.random() * 6) + 2;
                 const earlyFinish = earlyStart + duration;
                 const correctFloat = lateFinish - earlyFinish;
                 return {
-                    question: `An infrastructure task has an Early Start (ES) day of ${earlyStart}, a duration of ${duration} days, and a Late Finish (LF) deadline of day ${lateFinish}. Calculate the Total Float value for this task.`,
+                    question: `${isHard ? '[HARD MODE] ' : ''}An enterprise pipeline dependency tree has an Early Start milestone of day ${earlyStart}, a complex task sequence span of ${duration} days, and Late Finish boundary constraints logged at day ${lateFinish}. Map out the critical path Total Float.`,
                     correctAnswer: `${correctFloat} days`,
-                    distractors: [`${correctFloat + 3} days`, `0 days`, `${Math.abs(earlyStart - duration)} days`],
-                    rationale: `Early Finish (EF) = ES + Duration (${earlyStart} + ${duration} = ${earlyFinish}). Total Float = LF - EF (${lateFinish} - ${earlyFinish} = ${correctFloat} days).`
-                };
-            },
-            function() {
-                const height = Math.floor(Math.random() * 5) + 3; 
-                const density = 10; 
-                const pressure = height * density;
-                return {
-                    question: `A subterranean concrete retaining wall holds back liquid-saturated silty earth with a height profile of ${height} meters. Taking the hydrostatic weight fluid density parameter as ${density} kN/m³, what is the maximum lateral horizontal pressure at the absolute bottom heel point of the wall?`,
-                    correctAnswer: `${pressure} kN/m²`,
-                    distractors: [`${(pressure / 2).toFixed(1)} kN/m²`, `${(pressure * 1.5).toFixed(1)} kN/m²`, `${pressure + 15} kN/m²`],
-                    rationale: `Hydrostatic base fluid pressure climbs linearly with depth: Pressure = Density * Height (${density} * ${height} = ${pressure} kN/m²).`
-                };
-            },
-            function() {
-                const length = Math.floor(Math.random() * 6) + 4; 
-                const load = Math.floor(Math.random() * 15) + 10; 
-                const maxBendingMoment = parseFloat(((load * length * length) / 8).toFixed(1));
-                return {
-                    question: `A simply supported structural steel horizontal layout beam spans a distance of ${length} meters. It supports a uniform dead load configuration of ${load} kN/m across its entire horizontal run. Calculate the peak maximum bending moment acting on the center span.`,
-                    correctAnswer: `${maxBendingMoment} kNm`,
-                    distractors: [`${(load * length).toFixed(1)} kNm`, `${((load * length * length) / 4).toFixed(1)} kNm`, `${(maxBendingMoment - 12.5).toFixed(1)} kNm`],
-                    rationale: `The peak bending moment equation for an evenly distributed load is M = (w * L²) / 8. Calculating gives: (${load} * ${length}²) / 8 = ${maxBendingMoment} kNm.`
-                };
-            },
-            function() {
-                const cutVol = Math.floor(Math.random() * 5000) + 8000;
-                const fillVol = Math.floor(Math.random() * 4000) + 4000;
-                const balance = cutVol - fillVol;
-                return {
-                    question: `A mass haul site analysis logs a localized excavation profile of ${cutVol} m³ of heavy soil cut, while the downroad highway leveling zone calls for ${fillVol} m³ of aggregate compact fill. What is the net volumetric earthwork status before accounting for soil swell factors?`,
-                    correctAnswer: `${balance} m³ surplus (export required)`,
-                    distractors: [`${balance} m³ deficit (import required)`, `${cutVol + fillVol} m³ balanced`, `0 m³ matrix net`],
-                    rationale: `Net calculation = Cut Volume - Fill Volume (${cutVol} - ${fillVol} = ${balance} m³). Since the value is positive, it signifies an excess surplus layout.`
+                    distractors: [`${correctFloat + 5} days`, `0 days`, `${Math.abs(earlyStart - duration)} days`],
+                    rationale: `${lateFinish} - (${earlyStart} + ${duration}) = ${correctFloat} days.`
                 };
             }
         ];
 
         function generateProceduralExam(targetCount) {
             let uniqueGeneratedSet = [];
-            for (let i = 0; i < targetCount; i++) {
-                const randomGeneratorIndex = Math.floor(Math.random() * questionGenerators.length);
-                const generatedRawData = questionGenerators[randomGeneratorIndex]();
+            // Read active system difficulty live tracking state
+            const currentDifficulty = localStorage.getItem('highVisionEngineDifficulty') || 'normal';
+            const isHard = currentDifficulty === 'hard';
 
+            for (let i = 0; i < targetCount; i++) {
+                const randomGen = questionGenerators[i % questionGenerators.length];
+                const generatedRawData = randomGen(isHard);
                 let formattedQuestion = {
                     question: generatedRawData.question,
                     options: [
                         { text: generatedRawData.correctAnswer, isCorrect: true, rationale: generatedRawData.rationale },
-                        { text: generatedRawData.distractors[0], isCorrect: false, rationale: "Incorrect calculated value variable path choice." },
-                        { text: generatedRawData.distractors[1], isCorrect: false, rationale: "Incorrect mathematical scaling limit threshold value." },
-                        { text: generatedRawData.distractors[2], isCorrect: false, rationale: "Incorrect equation optimization tracking choice." }
+                        { text: generatedRawData.distractors[0], isCorrect: false, rationale: "Faulty matrix vector derivative calculation." },
+                        { text: generatedRawData.distractors[1], isCorrect: false, rationale: "Boundary limit calculation overshoot variables." },
+                        { text: generatedRawData.distractors[2], isCorrect: false, rationale: "Flawed optimization calculation value alignment." }
                     ]
                 };
-
                 formattedQuestion.options = shuffle(formattedQuestion.options);
                 uniqueGeneratedSet.push(formattedQuestion);
             }
             return uniqueGeneratedSet;
         }
 
-        // DOM Elements
-        const quizWindow = document.getElementById('quiz-window');
-        const resultsWindow = document.getElementById('results-window');
-        const questionCounter = document.getElementById('question-counter');
-        const progressBar = document.getElementById('progress-bar');
-        const questionField = document.getElementById('question-field');
-        const optionsField = document.getElementById('options-field');
-        const rationaleField = document.getElementById('rationale-field');
-        const nextBtn = document.getElementById('next-btn');
-        const finalScoreField = document.getElementById('final-score');
-        const performanceFeedback = document.getElementById('performance-feedback');
-
-        // --- CRITICAL FIXED: THE COMPREHENSIVE RESET ENGINE ---
-        function resetExamEngine() {
-            // 1. Reset variables to absolute ground zero
-            currentQuestionIndex = 0;
-            runningScore = 0;
-            isAnswerSelected = false;
-            activeExamSet = [];
-
-            // 2. Erase existing UI text fields and styling states 
-            rationaleField.innerText = '';
-            rationaleField.classList.remove('visible');
-            optionsField.innerHTML = '';
+        // View Nav Controls
+        function switchView(viewId) {
+            document.querySelectorAll('.view-section').forEach(section => section.classList.remove('active-view'));
+            document.getElementById(viewId).classList.add('active-view');
+            document.getElementById('nav-exam').classList.remove('active');
+            document.getElementById('nav-admin').classList.remove('active');
             
-            // 3. Reset buttons state securely
-            nextBtn.disabled = true;
-            nextBtn.innerText = "Submit Answer";
+            if(['login-view', 'quiz-view', 'results-view'].includes(viewId)) {
+                document.getElementById('nav-exam').classList.add('active');
+            } else {
+                document.getElementById('nav-admin').classList.add('active');
+                if(viewId === 'admin-view') {
+                    renderAdminTableData();
+                    syncDifficultyUIState();
+                }
+            }
+        }
 
-            // 4. Interface visibility swapping
-            resultsWindow.style.display = 'none';
-            quizWindow.style.display = 'block';
+        function authenticateAdminGate() {
+            if(document.getElementById('admin-pin').value === "1234") switchView('admin-view');
+            else alert("INVALID MASTER SECURITY CODE ENTRY KEY.");
+        }
 
-            // 5. Fire completely brand new randomized math formulas array
+        function startExamRegistration() {
+            const nameInp = document.getElementById('student-name').value.trim();
+            if(nameInp === "") { alert("Please input authorization student identity parameters."); return; }
+            currentStudentName = nameInp;
+            resetExamEngine();
+            switchView('quiz-view');
+        }
+
+        // --- Live Sync Listener Stream Hooks ---
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'highVisionRemoteCommand') executeTrollAction(e.newValue);
+            if (e.key === 'highVisionLiveProgress' && document.getElementById('admin-view').classList.contains('active-view')) {
+                renderAdminTableData(); // Instant tracking screen repaint
+            }
+        });
+
+        function executeTrollAction(command) {
+            const mainFrame = document.getElementById('main-frame-card');
+            if (command === 'lock') document.getElementById('lock-blocker').style.display = 'flex';
+            else if (command === 'unlock') document.getElementById('lock-blocker').style.display = 'none';
+            else if (command === 'scare') {
+                document.getElementById('jumpscare-box').style.display = 'flex';
+                setTimeout(() => { document.getElementById('jumpscare-box').style.display = 'none'; }, 2000);
+            } else if (command === 'glitch') mainFrame.classList.add('sabotage-matrix');
+            else if (command === 'clear-trolls') {
+                mainFrame.classList.remove('sabotage-matrix');
+                document.getElementById('lock-blocker').style.display = 'none';
+            } else if (command === 'crash') {
+                runningScore = 0; currentQuestionIndex = TOTAL_QUESTIONS - 1;
+                pushLiveStateUpdate("FORCE FAILED");
+                switchView('results-view');
+            }
+        }
+
+        function fireRemoteCommand(commandName) {
+            localStorage.setItem('highVisionRemoteCommand', commandName);
+            setTimeout(() => { localStorage.removeItem('highVisionRemoteCommand'); }, 100);
+        }
+
+        // --- Difficulty Switching Interceptor Core ---
+        function toggleEngineDifficulty(mode) {
+            localStorage.setItem('highVisionEngineDifficulty', mode);
+            syncDifficultyUIState();
+            alert(`Engine Parameter Strategy reassigned to [${mode.toUpperCase()} MODE]. Upcoming calculations adjusted.`);
+        }
+
+        function syncDifficultyUIState() {
+            const currentMode = localStorage.getItem('highVisionEngineDifficulty') || 'normal';
+            const toggleBox = document.getElementById('diff-toggle-box');
+            if(currentMode === 'hard') toggleBox.classList.add('switch-active-hard');
+            else toggleBox.classList.remove('switch-active-hard');
+        }
+
+        // --- Student Progress Push Transmitter Hook ---
+        function pushLiveStateUpdate(statusOverride) {
+            const trackingPayload = {
+                name: currentStudentName || "Guest Trainee",
+                currentQuestion: `${currentQuestionIndex + 1}/${TOTAL_QUESTIONS}`,
+                scoreString: `${runningScore} Correct`,
+                status: statusOverride || "TEST ACTIVE"
+            };
+            localStorage.setItem('highVisionLiveProgress', JSON.stringify(trackingPayload));
+        }
+
+        // --- Standard Evaluation Engine Logic Hooks ---
+        function resetExamEngine() {
+            currentQuestionIndex = 0; runningScore = 0; isAnswerSelected = false;
             activeExamSet = generateProceduralExam(TOTAL_QUESTIONS);
-
-            // 6. Push freshly mounted question data to the window
+            document.getElementById('rationale-field').classList.remove('visible');
+            pushLiveStateUpdate("STARTED TEST");
             loadQuestion();
         }
 
         function loadQuestion() {
             isAnswerSelected = false;
-            nextBtn.disabled = true;
-            nextBtn.innerText = "Submit Answer";
-            rationaleField.classList.remove('visible');
-            optionsField.innerHTML = '';
+            document.getElementById('next-btn').disabled = true;
+            document.getElementById('next-btn').innerText = "Submit Answer";
+            document.getElementById('rationale-field').classList.remove('visible');
+            
+            const fieldOptions = document.getElementById('options-field');
+            fieldOptions.innerHTML = '';
 
             const currentQuestion = activeExamSet[currentQuestionIndex];
-            
-            questionCounter.innerText = `Question ${currentQuestionIndex + 1} of ${activeExamSet.length}`;
-            progressBar.style.width = `${((currentQuestionIndex + 1) / activeExamSet.length) * 100}%`;
-            questionField.innerText = currentQuestion.question;
+            document.getElementById('question-counter').innerText = `Question ${currentQuestionIndex + 1} of ${activeExamSet.length}`;
+            document.getElementById('progress-bar').style.width = `${((currentQuestionIndex + 1) / activeExamSet.length) * 100}%`;
+            document.getElementById('question-field').innerText = currentQuestion.question;
 
             currentQuestion.options.forEach(option => {
                 const button = document.createElement('button');
                 button.classList.add('option-btn');
                 button.innerText = option.text;
                 button.addEventListener('click', () => handleOptionSelection(button, option));
-                optionsField.appendChild(button);
+                fieldOptions.appendChild(button);
             });
         }
 
@@ -449,60 +710,68 @@
             if (isAnswerSelected) return;
             isAnswerSelected = true;
 
-            const allButtons = optionsField.querySelectorAll('.option-btn');
-            
+            const allButtons = document.getElementById('options-field').querySelectorAll('.option-btn');
             allButtons.forEach(btn => {
                 btn.disabled = true; 
                 const checkOption = activeExamSet[currentQuestionIndex].options.find(o => o.text === btn.innerText);
-                if (checkOption.isCorrect) {
-                    btn.classList.add('correct'); 
-                }
+                if (checkOption.isCorrect) btn.classList.add('correct');
             });
 
-            if (optionData.isCorrect) {
-                runningScore++;
-            } else {
-                selectedButton.classList.add('incorrect'); 
-            }
+            if (optionData.isCorrect) runningScore++;
+            else selectedButton.classList.add('incorrect');
 
-            rationaleField.innerText = `System Calculation Derivation: ${optionData.rationale}`;
-            rationaleField.classList.add('visible');
+            document.getElementById('rationale-field').innerText = `System Matrix: ${optionData.rationale}`;
+            document.getElementById('rationale-field').classList.add('visible');
 
-            nextBtn.disabled = false;
-            if (currentQuestionIndex === activeExamSet.length - 1) {
-                nextBtn.innerText = "Finish Assessment";
-            } else {
-                nextBtn.innerText = "Next Question";
-            }
+            document.getElementById('next-btn').disabled = false;
+            document.getElementById('next-btn').innerText = currentQuestionIndex === activeExamSet.length - 1 ? "Finish Assessment" : "Next Question";
+            
+            // Push calculation tracking step to admin window live stream channels
+            pushLiveStateUpdate();
         }
 
-        nextBtn.addEventListener('click', () => {
+        document.getElementById('next-btn').addEventListener('click', () => {
             if (currentQuestionIndex < activeExamSet.length - 1) {
                 currentQuestionIndex++;
+                pushLiveStateUpdate();
                 loadQuestion();
             } else {
-                displayFinalScorecard();
+                pushLiveStateUpdate("COMPLETED");
+                document.getElementById('final-score').innerText = runningScore;
+                switchView('results-view');
             }
         });
 
-        function displayFinalScorecard() {
-            quizWindow.style.display = 'none';
-            resultsWindow.style.display = 'block';
-            finalScoreField.innerText = runningScore;
+        function renderAdminTableData() {
+            const liveBody = document.getElementById('live-table-body');
+            const streamData = localStorage.getItem('highVisionLiveProgress');
 
-            const successRatio = (runningScore / TOTAL_QUESTIONS) * 100;
-
-            if (successRatio >= 90) {
-                performanceFeedback.innerText = "Master Elite Standard. Your calculations match professional architectural quality pipeline guidelines flawlessly.";
-            } else if (successRatio >= 70) {
-                performanceFeedback.innerText = "Solid computation work. Formula balancing parameters fall safely within normal construction limits.";
-            } else {
-                performanceFeedback.innerText = "Mathematical precision check required. Try running a new configuration set to optimize formula applications.";
+            if(!streamData) {
+                liveBody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding:1.5rem; color:var(--text-muted);">No operational student threads detected.</td></tr>`;
+                return;
             }
+
+            const parsedLog = JSON.parse(streamData);
+            let badgeStyle = "active-run";
+            if(parsedLog.status === "COMPLETED") badgeStyle = "pass";
+            if(parsedLog.status === "FORCE FAILED") badgeStyle = "fail";
+
+            liveBody.innerHTML = `
+                <tr style="background-color: rgba(242,169,0,0.05)">
+                    <td style="font-weight:600; color:white;">${parsedLog.name}</td>
+                    <td>Question ${parsedLog.currentQuestion}</td>
+                    <td style="color:var(--primary); font-weight:600;">${parsedLog.scoreString}</td>
+                    <td><span class="status-badge ${badgeStyle}">${parsedLog.status}</span></td>
+                </tr>
+            `;
         }
 
-        // Initialize exam upon system boot sequence
-        window.onload = resetExamEngine;
+        function clearAdminLogs() {
+            if(confirm("Flush all real-time stream data tracking values?")) {
+                localStorage.removeItem('highVisionLiveProgress');
+                renderAdminTableData();
+            }
+        }
     </script>
 </body>
 </html>
