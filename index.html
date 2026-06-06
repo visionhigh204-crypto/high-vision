@@ -3,257 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eid al-Adha Graphic Experience</title>
+    <title>High Vision | Construction Engineers</title>
+    <!-- Google Fonts for a modern, premium feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body, html {
+        /* Modern Reset and Variables */
+        * {
             margin: 0;
             padding: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #0c0f26;
-            color: white;
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-end; /* Aligns content toward bottom like a stage */
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
         }
 
-        /* Click to Play Screen */
-        #intro {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #0c0f26;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 100;
-            cursor: pointer;
-            transition: opacity 1s ease;
+        :root {
+            --primary: #f2a900; /* Premium Construction Gold/Amber */
+            --dark: #111827;    /* Deep Slate/Black */
+            --light: #f9fafb;   /* Clean Off-White */
+            --gray: #6b7280;    /* Muted Text Gray */
         }
 
-        .play-card {
-            padding: 20px 40px;
-            background: linear-gradient(135deg, #fbbf24, #d97706);
-            color: #0c0f26;
-            font-weight: bold;
-            font-size: 1.2rem;
-            border-radius: 30px;
-            box-shadow: 0 10px 25px rgba(217, 119, 6, 0.4);
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); box-shadow: 0 10px 25px rgba(217, 119, 6, 0.4); }
-            50% { transform: scale(1.05); box-shadow: 0 15px 35px rgba(217, 119, 6, 0.6); }
-        }
-
-        /* Vector Art Canvas */
-        #artCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-        }
-
-        /* Typography Overlay */
-        .ui-layer {
-            position: relative;
-            z-index: 2;
-            margin-bottom: 12vh; /* Holds text perfectly above the vector horizon */
-            pointer-events: none;
-            text-align: center;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 2s cubic-bezier(0.22, 1, 0.36, 1);
-        }
-
-        .ui-layer.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        h1 {
-            font-size: 3.8rem;
-            margin: 0;
-            color: #fef08a;
-            text-shadow: 0 4px 15px rgba(0,0,0,0.6), 0 0 30px rgba(251, 191, 36, 0.3);
-            letter-spacing: 1px;
-        }
-
-        p {
-            font-size: 1.3rem;
-            color: #e2e8f0;
-            max-width: 550px;
-            margin: 15px auto 0 auto;
-            text-shadow: 0 2px 8px rgba(0,0,0,0.8);
+        body {
+            background-color: var(--light);
+            color: var(--dark);
             line-height: 1.6;
         }
 
-        .signature {
+        /* Navigation */
+        nav {
+            background-color: var(--dark);
+            padding: 1.5rem 10%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            color: #ffffff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #e5e7eb;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(17, 24, 39, 0.85), rgba(17, 24, 39, 0.85)), 
+                        url('https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=1920&q=80') no-repeat center center/cover;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 1rem;
+            color: #ffffff;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -1px;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            max-width: 600px;
+            margin-bottom: 2rem;
+            color: #d1d5db;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: var(--dark);
+            padding: 0.75rem 2rem;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 4px;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            background-color: #d99600;
+        }
+
+        /* Services Section */
+        .services {
+            padding: 5rem 10%;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 2.25rem;
+            margin-bottom: 3rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            width: 50%;
+            height: 4px;
+            background-color: var(--primary);
             position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 3;
-            font-size: 0.85rem;
-            letter-spacing: 3px;
-            color: rgba(254, 240, 138, 0.5);
-            text-transform: uppercase;
+            bottom: -10px;
+            left: 25%;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 2.5rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-top: 4px solid var(--dark);
+            transition: border-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .card:hover {
+            border-top-color: var(--primary);
+            transform: translateY(-5px);
+        }
+
+        .card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: #9ca3af;
+            text-align: center;
+            padding: 3rem 1rem;
+            margin-top: 5rem;
+            font-size: 0.9rem;
+            border-top: 4px solid var(--primary);
+        }
+
+        footer p {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .nav-links { display: none; } /* Simplified for example */
         }
     </style>
-    </head>
+</head>
 <body>
 
-    <div id="intro">
-        <div class="play-card">✨ ENTER EID EXPERIENCE ✨</div>
-    </div>
+    <!-- Navigation Bar -->
+    <nav>
+        <div class="logo">HIGH<span>VISION</span></div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
 
-    <canvas id="artCanvas"></canvas>
+    <!-- Hero Header -->
+    <header class="hero" id="home">
+        <h1>Engineering Bold Visions</h1>
+        <p>From complex architectural layouts to structural master planning. We deliver high-end infrastructure solutions built to last.</p>
+        <a href="#services" class="btn">Explore Our Work</a>
+    </header>
 
-    <div class="ui-layer" id="textDisplay">
-        <h1>Eid al-Adha Mubarak</h1>
-        <p>May your faith and devotion be rewarded with supreme blessings, peace, and endless joy.</p>
-    </div>
+    <!-- Core Services Layout -->
+    <section class="services" id="services">
+        <h2 class="section-title">Our Engineering Expertise</h2>
+        <div class="grid">
+            <div class="card">
+                <h3>Structural Engineering</h3>
+                <p>Advanced structural analysis, blueprints, and meticulous design frameworks ensuring absolute stability and safety for commercial developments.</p>
+            </div>
+            <div class="card">
+                <h3>Project Management</h3>
+                <p>End-to-end execution supervision, scheduling, and strict quality control pipelines from breaking ground to final delivery.</p>
+            </div>
+            <div class="card">
+                <h3>Civil Design</h3>
+                <p>Innovative site planning, architectural zoning integration, and sustainable modern infrastructure development blueprints.</p>
+            </div>
+        </div>
+    </section>
 
-    <div class="signature">Admin System Tracking</div>
+    <!-- Professional Footer -->
+    <footer>
+        <p>&copy; 2026 High Vision Construction Engineering. All Rights Reserved.</p>
+        <p>Crafting high-end structural blueprints and partnerships.</p>
+    </footer>
 
-    <audio id="bgMusic" loop>
-        <source src="music.mp3" type="audio/mpeg">
-    </audio>
-
-    <script>
-        const canvas = document.getElementById('artCanvas');
-        const ctx = canvas.getContext('2d');
-        const intro = document.getElementById('intro');
-        const textDisplay = document.getElementById('textDisplay');
-        const audio = document.getElementById('bgMusic');
-
-        let width = canvas.width = window.innerWidth;
-        let height = canvas.height = window.innerHeight;
-
-        window.addEventListener('resize', () => {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-        });
-
-        // Interactive states
-        let pulseDirection = 1;
-        let glowScale = 0;
-        const stars = Array.from({ length: 60 }, () => ({
-            x: Math.random(),
-            y: Math.random() * 0.6,
-            size: Math.random() * 2 + 0.5,
-            speed: 0.01 + Math.random() * 0.02,
-            phase: Math.random() * Math.PI
-        }));
-
-        // --- JAVASCRIPT VECTOR DRAWING ENGINE ---
-        function drawVectorArt() {
-            // 1. Draw Sky Gradient
-            let skyGrad = ctx.createLinearGradient(0, 0, 0, height);
-            skyGrad.addColorStop(0, '#060814');
-            skyGrad.addColorStop(0.5, '#0c112d');
-            skyGrad.addColorStop(1, '#1b173d');
-            ctx.fillStyle = skyGrad;
-            ctx.fillRect(0, 0, width, height);
-
-            // 2. Draw Twinkling JS Stars
-            stars.forEach(s => {
-                s.phase += s.speed;
-                let alpha = (Math.sin(s.phase) + 1) / 2 * 0.8 + 0.2;
-                ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-                ctx.beginPath();
-                ctx.arc(s.x * width, s.y * height, s.size, 0, Math.PI * 2);
-                ctx.fill();
-            });
-
-            // Dynamic bounce modifiers
-            glowScale += 0.005 * pulseDirection;
-            if(glowScale > 1 || glowScale < 0) pulseDirection *= -1;
-            let dynamicOffset = Math.sin(glowScale * Math.PI) * 8;
-
-            // 3. Draw Stylized Graphic Crescent Moon
-            const moonX = width * 0.5;
-            const moonY = height * 0.32 + (dynamicOffset * 0.3);
-            
-            ctx.shadowBlur = 40 + (dynamicOffset * 2);
-            ctx.shadowColor = 'rgba(251, 191, 36, 0.4)';
-            
-            ctx.fillStyle = '#fef08a';
-            ctx.beginPath();
-            ctx.arc(moonX, moonY, 70, 0, Math.PI * 2);
-            ctx.fill();
-            
-            // Masking cut out to form the perfect crescent shape
-            ctx.shadowBlur = 0; 
-            ctx.fillStyle = skyGrad; 
-            ctx.beginPath();
-            ctx.arc(moonX + 22, moonY - 10, 65, 0, Math.PI * 2);
-            ctx.fill();
-
-            // 4. Draw Layered Vector Islamic Mosque Silhouette (Bottom Horizon)
-            ctx.shadowBlur = 0;
-            const baseWidth = Math.min(600, width * 0.9);
-            const startX = (width - baseWidth) / 2;
-            const horizon = height * 0.95;
-
-            // Gradient composition for vector graphic feel
-            let architectureGrad = ctx.createLinearGradient(0, height * 0.5, 0, height);
-            architectureGrad.addColorStop(0, '#2d2159');
-            architectureGrad.addColorStop(1, '#130d2b');
-            ctx.fillStyle = architectureGrad;
-
-            ctx.beginPath();
-            // Main structure block
-            ctx.rect(startX, horizon - 80, baseWidth, 80);
-            
-            // Central dome build
-            const center = width / 2;
-            ctx.moveTo(center - 70, horizon - 80);
-            ctx.quadraticCurveTo(center - 70, horizon - 160, center, horizon - 160);
-            ctx.quadraticCurveTo(center + 70, horizon - 160, center + 70, horizon - 80);
-
-            // Left Minaret tower
-            ctx.rect(startX + 30, horizon - 210, 25, 130);
-            ctx.moveTo(startX + 25, horizon - 210);
-            ctx.lineTo(startX + 42.5, horizon - 245);
-            ctx.lineTo(startX + 60, horizon - 210);
-
-            // Right Minaret tower
-            ctx.rect(startX + baseWidth - 55, horizon - 210, 25, 130);
-            ctx.moveTo(startX + baseWidth - 60, horizon - 210);
-            ctx.lineTo(startX + baseWidth - 42.5, horizon - 245);
-            ctx.lineTo(startX + baseWidth - 25, horizon - 210);
-
-            ctx.closePath();
-            ctx.fill();
-        }
-
-        // Render Loop running graphics dynamically
-        function runGraphicsEngine() {
-            drawVectorArt();
-            requestAnimationFrame(runGraphicsEngine);
-        }
-
-        // Audio and Screen Reveal handling
-        intro.addEventListener('click', () => {
-            audio.play();
-            intro.style.opacity = '0';
-            setTimeout(() => {
-                intro.style.display = 'none';
-                textDisplay.classList.add('active');
-            }, 1000);
-        });
-
-        // Initialize engine
-        runGraphicsEngine();
-    </script>
 </body>
 </html>
