@@ -71,3 +71,69 @@ function draw(ctx) {
     ctx.fillStyle = player.color;
     ctx.fillRect(player.x, player.y, player.width, player.height);
 }
+const mouse = { x: 0, y: 0 };
+
+// Update mouse coordinates whenever it moves over the canvas
+canvas.addEventListener('mousemove', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+});const projectiles = [];
+
+// Fire a bullet when the left mouse button is clicked
+canvas.addEventListener('mousedown', () => {
+    // 1. Find the exact center of the player block
+    const playerCenterX = player.x + player.width / 2;
+    const playerCenterY = player.y + player.height / 2;
+
+    // 2. Calculate the angle from the player to the mouse
+    const angle = Math.atan2(mouse.y - playerCenterY, mouse.x - playerCenterX);
+    
+    // 3. Determine the velocity (speed + direction)
+    const bulletSpeed = 500; // Pixels per second
+    const velocity = {
+        x: Math.cos(angle) * bulletSpeed,
+        y: Math.sin(angle) * bulletSpeed
+    };
+
+    // 4. Push a new bullet object into our array
+    projectiles.push({
+        x: playerCenterX,
+        y: playerCenterY,
+        radius: 5,
+        color: '#FF0000', // Bright red lasers
+        velocity: velocity
+    });
+});function update(deltaTime) {
+    const dtSeconds = deltaTime / 1000; 
+
+    // [Your existing WASD movement code goes here]
+
+    // Loop backwards through projectiles to update them safely
+    for (let i = projectiles.length - 1; i >= 0; i--) {
+        const p = projectiles[i];
+        
+        // Move the bullet
+        p.x += p.velocity.x * dtSeconds;
+        p.y += p.velocity.y * dtSeconds;
+
+        // Garbage Collection: Delete bullets that go off-screen so we don't crash the browser
+        if (p.x < 0 || p.x > canvas.width || p.y < 0 || p.y > canvas.height) {
+            projectiles.splice(i, 1);
+        }
+    }
+}
+
+function draw(ctx) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // [Your existing player drawing code goes here]
+    
+    // Draw every projectile in the array
+    projectiles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+    });
+}
