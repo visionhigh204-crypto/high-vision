@@ -1,1 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muharram Noha Player - Azadari Companion</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for Media Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
 
+    <div class="player-container">
+        <!-- Header / Commemoration Label -->
+        <header class="app-header">
+            <h1>Ya Hussain (a.s)</h1>
+            <p class="subtitle">Muharram Azadari Player</p>
+        </header>
+
+        <!-- Main Display / Track Info -->
+        <div class="now-playing-card">
+            <div class="art-placeholder">
+                <i class="fa-solid fa-flag"></i>
+            </div>
+            <h2 id="track-title">Select a Noha</h2>
+            <h3 id="track-artist">Reciter Name</h3>
+        </div>
+
+        <!-- Audio Element (Hidden) -->
+        <audio id="audio-player" src=""></audio>
+
+        <!-- Progress Bar Controls -->
+        <div class="progress-container">
+            <span id="current-time">0:00</span>
+            <input type="range" id="progress-bar" value="0" max="100">
+            <span id="total-duration">0:00</span>
+        </div>
+
+        <!-- Media Control Buttons -->
+        <div class="controls">
+            <button id="btn-prev" class="ctrl-btn" title="Previous"><i class="fa-solid fa-backward-step"></i></button>
+            <button id="btn-play" class="ctrl-btn play-main" title="Play/Pause"><i class="fa-solid fa-play"></i></button>
+            <button id="btn-next" class="ctrl-btn" title="Next"><i class="fa-solid fa-forward-step"></i></button>
+        </div>
+
+        <!-- Dynamic Playlist Queue -->
+        <div class="playlist-section">
+            <h3>Noha Queue</h3>
+            <ul id="playlist">
+                <!-- Javascript will inject list items here -->
+            </ul>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
