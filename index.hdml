@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muharram Noha Player - Azadari Companion</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-dark: #121212;
+            --card-dark: #1e1e1e;
+            --accent-crimson: #8b0000;
+            --accent-bright-red: #d32f2f;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .player-container {
+            background-color: var(--card-dark);
+            width: 100%;
+            max-width: 420px;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+            border-top: 4px solid var(--accent-crimson);
+        }
+
+        .app-header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .app-header h1 {
+            font-size: 1.6rem;
+            color: var(--accent-bright-red);
+            letter-spacing: 1px;
+        }
+
+        .app-header .subtitle {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-top: 4px;
+        }
+
+        .now-playing-card {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .art-placeholder {
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(145deg, #151515, #252525);
+            margin: 0 auto 16px auto;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 2px solid var(--accent-crimson);
+        }
+
+        .art-placeholder i {
+            font-size: 3rem;
+            color: var(--accent-bright-red);
+        }
+
+        #track-title {
+            font-size: 1.25rem;
+            margin-bottom: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        #track-artist {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .progress-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        #progress-bar {
+            flex-grow: 1;
+            accent-color: var(--accent-bright-red);
+            cursor: pointer;
+            height: 5px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        .ctrl-btn {
+            background: none;
+            border: none;
+            color: var(--text-main);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .ctrl-btn:hover {
+            color: var(--accent-bright-red);
+        }
+
+        .play-main {
+            background-color: var(--accent-crimson);
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.3rem;
+            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.4);
+        }
+
+        .play-main:hover {
+            background-color: var(--accent-bright-red);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .playlist-section h3 {
+            font-size: 1rem;
+            margin-bottom: 12px;
+            color: var(--text-muted);
+            border-bottom: 1px solid #333;
+            padding-bottom: 6px;
+        }
+
+        #playlist {
+            list-style: none;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+
+        #playlist li {
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #262626;
+            transition: background 0.2s;
+            font-size: 0.9rem;
+        }
+
+        #playlist li:hover {
+            background-color: #333;
+        }
+
+        #playlist li.active {
+            background-color: rgba(139, 0, 0, 0.2);
+            border-left: 3px solid var(--accent-bright-red);
+        }
+
+        #playlist li .reciter {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="player-container">
+        <header class="app-header">
+            <h1>Ya Hussain (a.s)</h1>
+            <p class="subtitle">Muharram Azadari Player</p>
+        </header>
+
+        <div class="now-playing-card">
+            <div class="art-placeholder">
+                <i class="fa-solid fa-flag"></i>
+            </div>
+            <h2 id="track-title">Select a Noha</h2>
+            <h3 id="track-artist">Reciter Name</h3>
+        </div>
+
+        <audio id="audio-player" src=""></audio>
+
+        <div class="progress-container">
+            <span id="current-time">0:00</span>
+            <input type="range" id="progress-bar" value="0" max="100">
+            <span id="total-duration">0:00</span>
+        </div>
+
+        <div class="controls">
+            <button id="btn-prev" class="ctrl-btn" title="Previous"><i class="fa-solid fa-backward-step"></i></button>
+            <button id="btn-play" class="ctrl-btn play-main" title="Play/Pause"><i class="fa-solid fa-play"></i></button>
+            <button id="btn-next" class="ctrl-btn" title="Next"><i class="fa-solid fa-forward-step"></i></button>
+        </div>
+
+        <div class="playlist-section">
+            <h3>Noha Queue</h3>
+            <ul id="playlist"></ul>
+        </div>
+    </div>
+
+    <script>
+        // Sample tracks data list - update the URLs with your audio files
+        const nohaList = [
+            {
+                title: "Noha 1 Title Sample",
+                artist: "Nadeem Sarwar",
+                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
+            },
+            {
+                title: "Noha 2 Title Sample",
+                artist: "Mir Hasan Mir",
+                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3"
+            },
+            {
+                title: "Noha 3 Title Sample",
+                artist: "Ali Shanawar",
+                url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3"
+            }
+        ];
+
+        let currentTrackIndex = 0;
+        let isPlaying = false;
+
+        const audio = document.getElementById('audio-player');
+        const playBtn = document.getElementById('btn-play');
+        const prevBtn = document.getElementById('btn-prev');
+        const nextBtn = document.getElementById('btn-next');
+        const progressBar = document.getElementById('progress-bar');
+        const currentTimeEl = document.getElementById('current-time');
+        const durationTimeEl = document.getElementById('total-duration');
+        const trackTitle = document.getElementById('track-title');
+        const trackArtist = document.getElementById('track-artist');
+        const playlistContainer = document.getElementById('playlist');
+
+        function initPlayer() {
+            buildPlaylistUI();
+            loadTrack(currentTrackIndex);
+        }
+
+        function buildPlaylistUI() {
+            playlistContainer.innerHTML = '';
+            nohaList.forEach((noha, index) => {
+                const li = document.createElement('li');
+                li.dataset.index = index;
+                if(index === currentTrackIndex) li.classList.add('active');
+                
+                li.innerHTML = `
+                    <span>${noha.title}</span>
+                    <span class="reciter">${noha.artist}</span>
+                `;
+                
+                li.addEventListener('click', () => {
+                    currentTrackIndex = index;
+                    loadTrack(currentTrackIndex);
+                    playTrack();
+                });
+                playlistContainer.appendChild(li);
+            });
+        }
+
+        function loadTrack(index) {
+            audio.src = nohaList[index].url;
+            trackTitle.innerText = nohaList[index].title;
+            trackArtist.innerText = nohaList[index].artist;
+            
+            const trackItems = playlistContainer.querySelectorAll('li');
+            trackItems.forEach(item => item.classList.remove('active'));
+            if(trackItems[index]) trackItems[index].classList.add('active');
+
+            progressBar.value = 0;
+        }
+
+        function playTrack() {
+            isPlaying = true;
+            audio.play().catch(err => console.log("Playback interaction flag checked: ", err));
+            playBtn.innerHTML = `<i class="fa-solid fa-pause"></i>`;
+        }
+
+        function pauseTrack() {
+            isPlaying = false;
+            audio.pause();
+            playBtn.innerHTML = `<i class="fa-solid fa-play"></i>`;
+        }
+
+        playBtn.addEventListener('click', () => {
+            if (isPlaying) {
+                pauseTrack();
+            } else {
+                playTrack();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            currentTrackIndex = (currentTrackIndex - 1 + nohaList.length) % nohaList.length;
+            loadTrack(currentTrackIndex);
+            if (isPlaying) playTrack();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentTrackIndex = (currentTrackIndex + 1) % nohaList.length;
+            loadTrack(currentTrackIndex);
+            if (isPlaying) playTrack();
+        });
+
+        audio.addEventListener('timeupdate', () => {
+            if (audio.duration) {
+                const progressPercent = (audio.currentTime / audio.duration) * 100;
+                progressBar.value = progressPercent;
+                
+                currentTimeEl.innerText = formatTime(audio.currentTime);
+                durationTimeEl.innerText = formatTime(audio.duration);
+            }
+        });
+
+        progressBar.addEventListener('input', () => {
+            const targetTime = (progressBar.value / 100) * audio.duration;
+            audio.currentTime = targetTime;
+        });
+
+        audio.addEventListener('ended', () => {
+            currentTrackIndex = (currentTrackIndex + 1) % nohaList.length;
+            loadTrack(currentTrackIndex);
+            playTrack();
+        });
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+        }
+
+        window.addEventListener('DOMContentLoaded', initPlayer);
+    </script>
+</body>
+</html>
